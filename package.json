@@ -1,0 +1,13 @@
+{
+    "name": "bauzeitplan",
+    "version": "0.0.1",
+    "description": "",
+    "author": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/trial/2021.2.5000.tar.gz"
+    }
+}

@@ -1,0 +1,282 @@
+.scheduler_transparent_main
+{
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    font-size: 13px;
+    border: 1px solid #c0c0c0;
+}
+
+.scheduler_transparent_event
+{
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+
+    font-size: 13px;
+    color: #000;
+}
+
+.scheduler_transparent_event_inner
+{
+    padding: 6px 4px 4px 4px;
+    overflow: hidden;
+
+    position: absolute;
+    top: 0px;
+    bottom: 1px;
+    left: 0px;
+    right: 0px;
+
+    background: #eeeeee;
+    border: 1px solid #aaaaaa;
+
+    display: flex; align-items: center;
+}
+
+.scheduler_transparent_event_hover .scheduler_transparent_event_inner
+{
+}
+
+.scheduler_transparent_event .scheduler_transparent_action:hover
+{
+    opacity: 1;
+    filter: none;
+}
+
+.scheduler_transparent_selected .scheduler_transparent_event_inner
+{
+    background: #ddd;
+}
+
+.scheduler_transparent_timeheader
+{
+    cursor: default;
+    /*color: #333;*/
+}
+
+.scheduler_transparent_message
+{
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+
+    padding: 10px;
+    color: #eeeeee;
+    background: #333;
+}
+
+.scheduler_transparent_timeheadergroup,
+.scheduler_transparent_timeheadercol
+{
+    color: #333;
+
+    background: #eeeeee;
+    background: linear-gradient(to bottom, #f3f3f3 0%, #e9e9e9);
+}
+
+.scheduler_transparent_rowheader,
+.scheduler_transparent_corner
+{
+    color: #333;
+    background: #eeeeee;
+    background: linear-gradient(to right, #f3f3f3 0%, #e9e9e9);
+}
+
+.scheduler_transparent_rowheader_inner {
+    padding: 7px;
+    position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; display: flex; align-items: center;
+}
+
+.scheduler_transparent_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    text-align: center;
+    border-right: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.scheduler_transparent_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #c0c0c0;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.scheduler_transparent_cellcolumn
+{
+    background: #fff;
+}
+
+.scheduler_transparent_cellparent {
+    background-color: #f8f8f8;
+}
+
+.scheduler_transparent_tree_image_no_children {}
+.scheduler_transparent_tree_image_expand { background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxwYXRoIGQ9J00gMS41IDAuNSBMIDYuNSA1IEwgMS41IDkuNScgc3R5bGU9J2ZpbGw6bm9uZTtzdHJva2U6Izk5OTk5OTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLWxpbmVjYXA6YnV0dCcgLz48L3N2Zz4=); }
+.scheduler_transparent_tree_image_collapse { background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHBhdGggZD0nTSAwLjUgMS41IEwgNSA2LjUgTCA5LjUgMS41JyBzdHlsZT0nZmlsbDpub25lO3N0cm9rZTojOTk5OTk5O3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbGluZWNhcDpidXR0JyAvPjwvc3ZnPg==); }
+
+.scheduler_transparent_divider,
+.scheduler_transparent_splitter
+{
+    background-color: #c0c0c0;
+}
+
+.scheduler_transparent_divider_horizontal
+{
+    background-color: #c0c0c0;
+}
+
+.scheduler_transparent_matrix_vertical_line
+{
+    background-color: #eee;
+}
+
+.scheduler_transparent_matrix_vertical_break
+{
+    background-color: #000;
+}
+
+.scheduler_transparent_matrix_horizontal_line
+{
+    background-color: #eee;
+}
+
+.scheduler_transparent_resourcedivider
+{
+    background-color: #c0c0c0;
+}
+
+.scheduler_transparent_shadow_inner
+{
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+}
+
+.scheduler_transparent_event_bar
+{
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    height: 4px;
+
+    background-color: #8bceff;
+}
+
+.scheduler_transparent_event_bar_inner
+{
+    position: absolute;
+    height: 4px;
+    background-color: #1066a8;
+}
+
+.scheduler_transparent_timeheader_float {
+    display: flex; align-items: center; justify-content: center;
+}
+
+.scheduler_transparent_timeheader_float_inner {
+}
+
+.scheduler_transparent_event_float {
+    display: flex; align-items: center;
+}
+.scheduler_transparent_event_float_inner {
+    padding: 5px 4px 4px 8px;
+    position: relative;
+}
+
+.scheduler_transparent_event_float_inner:after {
+    content:"";
+    border-color: transparent #1066a8 transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:7px;
+    left:-4px;
+}
+
+.scheduler_transparent_event_move_left {
+    box-sizing: border-box;
+    padding: 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee);
+}
+
+.scheduler_transparent_event_move_right {
+    box-sizing: border-box;
+    padding: 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee);
+}
+
+.scheduler_transparent_event_delete {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAI5JREFUKFNtkLERgCAMRbmzdK8s4gAUlhYOYEHJEJYOYOEwDmGBPxC4kOPfvePy84MGR0RJ2N1A8H3N6DATwSQ57m2ql8NBG+AEM7D+UW+wjdfUPgerYNgB5gOLRHqhcasg84C2QxPMtrUhSqQIhg7ypy9VM2EUZPI/4rQ7rGxqo9sadTegw+UdjeDLAKUfhbaQUVPIfJYAAAAASUVORK5CYII=) center center no-repeat;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.scheduler_transparent_event_delete:hover {
+    opacity: 1;
+}
+
+.scheduler_transparent_rowmove_handle { background-repeat: no-repeat; background-position: center center; background-color: #ccc; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAKCAYAAACT+/8OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAClJREFUGFdj+P//P4O9vX2Bg4NDP4gNFgBytgPxebgAMsYuQGMz/jMAAFsTZDPYJlDHAAAAAElFTkSuQmCC); cursor: move; }
+.scheduler_transparent_rowmove_source { background-color: black; opacity: 0.2; }
+.scheduler_transparent_rowmove_position_before, .scheduler_transparent_rowmove_position_after { background-color: #999; height: 2px; }
+.scheduler_transparent_rowmove_position_child { margin-left: 10px; background-color: #999; height: 2px; }
+.scheduler_transparent_rowmove_position_child:before { content: '+'; color: #999; position: absolute; top: -8px; left: -10px; }
+.scheduler_transparent_rowmove_position_forbidden { background-color: red; height: 2px; margin-left: 10px; }
+.scheduler_transparent_rowmove_position_forbidden:before { content: 'x'; color: red; position: absolute; top: -8px; left: -10px; }
+
+.scheduler_transparent_link_horizontal { border-bottom-style: solid; border-bottom-color: red }
+.scheduler_transparent_link_vertical { border-right-style: solid; border-right-color: red }
+.scheduler_transparent_link_arrow_right:before { content: ''; border-width: 6px; border-color: transparent transparent transparent red; border-style: solid; width: 0px; height:0px; position: absolute; }
+.scheduler_transparent_link_arrow_left:before { content: ''; border-width: 6px; border-color: transparent red transparent transparent; border-style: solid; width: 0px; height:0px; position: absolute; }
+.scheduler_transparent_link_arrow_down:before { content: ''; border-width: 6px; border-color: red transparent transparent transparent; border-style: solid; width: 0px; height:0px; position: absolute; }
+
+.scheduler_transparent_shadow_overlap .scheduler_transparent_shadow_inner { background-color: red; }
+.scheduler_transparent_overlay { background-color: gray; opacity: 0.5; filter: alpha(opacity=50); }
+
+.scheduler_transparent_event_group { box-sizing: border-box; font-size:13px; color:#666; padding:2px 2px 2px 2px; overflow:hidden; border:1px solid #ccc; background-color: #fff; }
+
+.scheduler_transparent_header_icon { box-sizing: border-box; border: 1px solid #aaa; background-color: #f5f5f5; color: #000; }
+.scheduler_transparent_header_icon:hover { background-color: #ccc; }
+.scheduler_transparent_header_icon_hide:before { content: '\00AB'; }
+.scheduler_transparent_header_icon_show:before { content: '\00BB'; }
+
+.scheduler_transparent_rowheader.scheduler_transparent_rowheader_selected { background-color: #aaa;background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent); background-size: 20px 20px; }
+
+.scheduler_transparent_row_new .scheduler_transparent_rowheader_inner { cursor: text; background-position: 0px 5px; background-repeat: no-repeat; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABUSURBVChTY0ACslAaK2CC0iCQDMSlECYmQFYIAl1AjFUxukIQwKoYm0IQwFCMSyEIaEJpMMClcD4Qp0CYEIBNIUzRPzAPCtAVYlWEDgyAGIdTGBgAbqEJYyjqa3oAAAAASUVORK5CYII=); }
+.scheduler_transparent_row_new .scheduler_transparent_rowheader_inner:hover { background: white; }
+.scheduler_transparent_rowheader textarea { padding: 3px; }
+.scheduler_transparent_rowheader_scroll { cursor: default; }
+
+.scheduler_transparent_shadow_forbidden .scheduler_transparent_shadow_inner { background-color: red; }
+
+.scheduler_transparent_event_moving_source { opacity: 0.5; filter: alpha(opacity=50); }
+
+.scheduler_transparent_linkpoint { background-color: white; border: 1px solid gray; border-radius: 5px; }
+.scheduler_transparent_linkpoint.scheduler_transparent_linkpoint_hover { background-color: black; }
+
+.scheduler_transparent_event.scheduler_transparent_event_version .scheduler_transparent_event_inner { background-color: #cfdde8; background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent); background-size: 20px 20px; }
+
+.scheduler_transparent_crosshair_vertical, .scheduler_transparent_crosshair_horizontal, .scheduler_transparent_crosshair_left, .scheduler_transparent_crosshair_top { background-color: gray; opacity: 0.2; filter: alpha(opacity=20); }
+.scheduler_transparent_link_dot { border-radius: 10px; background-color: red; }
+.scheduler_transparent_task_milestone .scheduler_transparent_event_inner { position:absolute;top:16%;left:16%;right:16%;bottom:16%; background: #38761d; border: 0px none; transform: rotate(45deg); filter: none; }
+.scheduler_transparent_event_left { white-space: nowrap; padding-top: 5px; color: #666; cursor: default; }
+.scheduler_transparent_event_right { white-space: nowrap; padding-top: 5px; color: #666; cursor: default; }
+.scheduler_transparent_selectionrectangle { background-color: #0000ff; border: 1px solid #000033; opacity: 0.4; }
+.scheduler_transparent_link_shadow { border:1px solid black; }
+.scheduler_transparent_link_shadow_circle { background-color:black; }
+
+.scheduler_transparent_block { background-color: #808080; opacity: 0.5; }

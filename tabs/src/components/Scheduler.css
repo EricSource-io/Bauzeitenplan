@@ -1,0 +1,174 @@
+#scheduler_main {
+    user-select: none;
+    line-height: 1.2;
+    position: relative;
+    border: 1px solid #999;
+    font-family: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    font-size: 14px;
+}
+
+#scheduler_sidebar {
+    position: absolute;
+    left: 0px;
+    width: 128px;
+    z-index: 1;
+}
+
+#scheduler_divider_vertical,
+#scheduler_divider_horizontal {
+    background-color: #ccc;
+    line-height: 1.2px;
+}
+
+#scheduler_divider_vertical {
+    position: absolute;
+    left: 127px;
+    width: 1px;
+    height: 388px;
+    z-index: 2;
+}
+
+#scheduler_divider_horizontal {
+    position: absolute;
+    top: 90px;
+    width: 100%;
+    height: 0px;
+    box-sizing: content-box;
+    border-bottom: 1px solid transparent;
+    z-index: 2;
+}
+
+#scheduler_corner,
+.scheduler_resource,
+.scheduler_timeheadergroup {
+    background-color: #fff;
+    transition: background-color .1s linear;
+}
+
+#scheduler_corner {
+    width: 128px;
+    height: 90px;
+    overflow: hidden;
+    position: relative;
+}
+
+#scheduler_corner_inner {
+    text-align: center;
+    line-height: 60px;
+}
+
+#scheduler_resource_table {
+    position: relative;
+}
+
+.scheduler_resource {
+    width: 128px;
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+.scheduler_resource_inner {
+    padding: 2px 8px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+#scheduler_default_rowEnd {
+    position: absolute;
+    height: 20px;
+    width: 100%;
+    color: rgb(51, 51, 51);
+    border-bottom: 1px solid #ccc;
+    ;
+    background-color: rgb(255, 255, 255);
+}
+
+.scheduler_resourcedivider {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 0px;
+    box-sizing: content-box;
+    border-bottom: 1px solid transparent;
+    background-color: #ccc;
+}
+
+.scheduler_cell {
+    background-color: rgb(255 255 255);
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-bottom: 1px solid rgb(236, 236, 236);
+    border-right: 1px solid rgb(236, 236, 236);
+}
+
+.scheduler_matrix_horizontal_line {
+    left: 0px;
+    top: 34px;
+    width: 13140px;
+    height: 1px;
+    font-size: 1px;
+    line-height: 1px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.scheduler_matrix_horizontal_line,
+.scheduler_matrix_vertical_line {
+    background-color: #eee;
+}
+
+.scheduler_timeheadergroup {
+    position: absolute;
+    top: 0px;
+    width: 1080px;
+    height: 30px;
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.scheduler_timeheadergroup_inner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid #ddd;
+    padding: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.scheduler_timeheader_float {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.scheduler_timeheader_float_inner {
+    padding: 3px;
+}
+
+.scheduler_default_scrollable {
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+    top: 151px;
+    left: 129px;
+}

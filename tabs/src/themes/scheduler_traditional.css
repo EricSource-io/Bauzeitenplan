@@ -1,0 +1,478 @@
+/*
+DayPilot Scheduler Theme
+https://themes.daypilot.org/scheduler/theme/cp4cbd
+Theme Designer Version: 2018.09.18.77420
+*/
+
+.scheduler_traditional_main {
+    border: 1px solid #999999;
+}
+
+.scheduler_traditional_main,
+.scheduler_traditional_main td {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+}
+
+.scheduler_traditional_event {}
+
+.scheduler_traditional_event {
+    color: #333333;
+}
+
+.scheduler_traditional_event_inner {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: 0px;
+    overflow: hidden;
+    background-color: #ffffff;
+    background: linear-gradient(to bottom, #ffffff 0%, #f2f2f2);
+    padding: 2px;
+    border: 1px solid #999999;
+    display: flex;
+    align-items: center;
+}
+
+.scheduler_traditional_timeheadergroup,
+.scheduler_traditional_timeheadercol {
+    color: #333333;
+    background: #ece9d8;
+    background: linear-gradient(to bottom, #efecde 0%, #e9e6d2);
+}
+
+.scheduler_traditional_rowheader,
+.scheduler_traditional_corner {
+    color: #333333;
+    background: #ece9d8;
+    background: linear-gradient(to right, #efecde 0%, #e9e6d2);
+}
+
+.scheduler_traditional_rowheader_inner {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+}
+
+.scheduler_traditional_timeheadergroup,
+.scheduler_traditional_timeheadercol {}
+
+.scheduler_traditional_timeheadergroup_inner,
+.scheduler_traditional_timeheadercol_inner {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #999999;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scheduler_traditional_timeheadergroup_inner {
+    border-bottom: 1px solid #999999;
+}
+
+.scheduler_traditional_divider,
+.scheduler_traditional_splitter,
+.scheduler_traditional_divider_horizontal,
+.scheduler_traditional_resourcedivider {
+    background-color: #999999;
+}
+
+.scheduler_traditional_matrix_vertical_line,
+.scheduler_traditional_matrix_horizontal_line {
+    background-color: #ead098;
+}
+
+.scheduler_traditional_cell {
+    background: #fff4bc;
+}
+
+.scheduler_traditional_cell.scheduler_traditional_cell_business {
+    background: #ffffd5;
+}
+
+.scheduler_traditional_message {
+    padding: 10px;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    color: #ffffff;
+    background: #777777;
+    background: linear-gradient(to bottom, #838383 0%, #6b6b6b);
+}
+
+.scheduler_traditional_shadow_inner {
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+}
+
+.scheduler_traditional_event_bar {
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    height: 3px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #999999;
+}
+
+.scheduler_traditional_event_bar_inner {
+    position: absolute;
+    height: 3px;
+    background-color: #2d5de0;
+}
+
+.scheduler_traditional_matrix_vertical_break {
+    background-color: #000;
+}
+
+.scheduler_traditional_cellparent {}
+
+.scheduler_traditional_tree_image_no_children {}
+
+.scheduler_traditional_tree_image_expand {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxwYXRoIGQ9J00gMS41IDAuNSBMIDYuNSA1IEwgMS41IDkuNScgc3R5bGU9J2ZpbGw6bm9uZTtzdHJva2U6Izk5OTk5OTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLWxpbmVjYXA6YnV0dCcgLz48L3N2Zz4=);
+}
+
+.scheduler_traditional_tree_image_collapse {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHBhdGggZD0nTSAwLjUgMS41IEwgNSA2LjUgTCA5LjUgMS41JyBzdHlsZT0nZmlsbDpub25lO3N0cm9rZTojOTk5OTk5O3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbGluZWNhcDpidXR0JyAvPjwvc3ZnPg==);
+}
+
+.scheduler_traditional_columnheader {}
+
+.scheduler_traditional_columnheader_inner {
+    font-weight: bold;
+}
+
+.scheduler_traditional_columnheader_cell {
+    background: linear-gradient(to right, #eeeeee 0%, #dddddd);
+}
+
+.scheduler_traditional_columnheader_splitter {
+    background-color: #666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.scheduler_traditional_columnheader_cell_inner {
+    padding: 2px;
+}
+
+.scheduler_traditional_timeheader_float {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scheduler_traditional_timeheader_float_inner {
+    padding: 2px;
+}
+
+.scheduler_traditional_event_float {
+    display: flex;
+    align-items: center;
+}
+
+.scheduler_traditional_event_float_inner {
+    padding: 6px 2px 2px 7px;
+    padding-left: 9px;
+    /*top: -2px;*/
+    position: relative;
+}
+
+.scheduler_traditional_event_float_inner:after {
+    content: "";
+    border-color: transparent #333333 transparent transparent;
+    border-style: solid;
+    border-width: 5px;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 8px;
+    left: -4px;
+}
+
+.scheduler_traditional_event_move_left {
+    box-sizing: border-box;
+    padding: 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee);
+}
+
+.scheduler_traditional_event_move_right {
+    box-sizing: border-box;
+    padding: 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    background: linear-gradient(to bottom, #ffffff 0%, #eeeeee);
+}
+
+.scheduler_traditional_event_delete {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAI5JREFUKFNtkLERgCAMRbmzdK8s4gAUlhYOYEHJEJYOYOEwDmGBPxC4kOPfvePy84MGR0RJ2N1A8H3N6DATwSQ57m2ql8NBG+AEM7D+UW+wjdfUPgerYNgB5gOLRHqhcasg84C2QxPMtrUhSqQIhg7ypy9VM2EUZPI/4rQ7rGxqo9sadTegw+UdjeDLAKUfhbaQUVPIfJYAAAAASUVORK5CYII=) center center no-repeat;
+    opacity: 0.6;
+    -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=60)';
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.scheduler_traditional_event_delete:hover {
+    opacity: 1;
+    -ms-filter: none;
+}
+
+.scheduler_traditional_rowmove_handle {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #ccc;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAKCAYAAACT+/8OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAClJREFUGFdj+P//P4O9vX2Bg4NDP4gNFgBytgPxebgAMsYuQGMz/jMAAFsTZDPYJlDHAAAAAElFTkSuQmCC);
+    cursor: move;
+}
+
+.scheduler_traditional_rowmove_source {
+    background-color: black;
+    opacity: 0.2;
+}
+
+.scheduler_traditional_rowmove_position_before,
+.scheduler_traditional_rowmove_position_after {
+    background-color: #999;
+    height: 2px;
+}
+
+.scheduler_traditional_rowmove_position_child {
+    margin-left: 10px;
+    background-color: #999;
+    height: 2px;
+}
+
+.scheduler_traditional_rowmove_position_child:before {
+    content: '+';
+    color: #999;
+    position: absolute;
+    top: -8px;
+    left: -10px;
+}
+
+.scheduler_traditional_rowmove_position_forbidden {
+    background-color: red;
+    height: 2px;
+    margin-left: 10px;
+}
+
+.scheduler_traditional_rowmove_position_forbidden:before {
+    content: 'x';
+    color: red;
+    position: absolute;
+    top: -8px;
+    left: -10px;
+}
+
+.scheduler_traditional_link_horizontal {
+    border-bottom-style: solid;
+    border-bottom-color: red
+}
+
+.scheduler_traditional_link_vertical {
+    border-right-style: solid;
+    border-right-color: red
+}
+
+.scheduler_traditional_link_arrow_right:before {
+    content: '';
+    border-width: 6px;
+    border-color: transparent transparent transparent red;
+    border-style: solid;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+}
+
+.scheduler_traditional_link_arrow_left:before {
+    content: '';
+    border-width: 6px;
+    border-color: transparent red transparent transparent;
+    border-style: solid;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+}
+
+.scheduler_traditional_link_arrow_down:before {
+    content: '';
+    border-width: 6px;
+    border-color: red transparent transparent transparent;
+    border-style: solid;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+}
+
+.scheduler_traditional_link_arrow_up:before {
+    content: '';
+    border-width: 6px;
+    border-color: transparent transparent red transparent;
+    border-style: solid;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+}
+
+.scheduler_traditional_shadow_overlap .scheduler_traditional_shadow_inner {
+    background-color: red;
+}
+
+.scheduler_traditional_overlay {
+    background-color: gray;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.scheduler_traditional_event_group {
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #666;
+    padding: 2px 2px 2px 2px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.scheduler_traditional_header_icon {
+    box-sizing: border-box;
+    border: 1px solid #999999;
+    background-color: #ece9d8;
+    color: #333333;
+}
+
+.scheduler_traditional_header_icon:hover {
+    background-color: #e9e6d2;
+}
+
+.scheduler_traditional_header_icon_hide:before {
+    content: '\00AB';
+}
+
+.scheduler_traditional_header_icon_show:before {
+    content: '\00BB';
+}
+
+.scheduler_traditional_rowheader.scheduler_traditional_rowheader_selected {
+    background-color: #aaa;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+}
+
+.scheduler_traditional_row_new .scheduler_traditional_rowheader_inner {
+    cursor: text;
+    background-position: 0px 5px;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABUSURBVChTY0ACslAaK2CC0iCQDMSlECYmQFYIAl1AjFUxukIQwKoYm0IQwFCMSyEIaEJpMMClcD4Qp0CYEIBNIUzRPzAPCtAVYlWEDgyAGIdTGBgAbqEJYyjqa3oAAAAASUVORK5CYII=);
+}
+
+.scheduler_traditional_row_new .scheduler_traditional_rowheader_inner:hover {
+    background: white;
+}
+
+.scheduler_traditional_rowheader textarea {
+    padding: 3px;
+}
+
+.scheduler_traditional_rowheader_scroll {
+    cursor: default;
+}
+
+.scheduler_traditional_shadow_forbidden .scheduler_traditional_shadow_inner {
+    background-color: red;
+}
+
+.scheduler_traditional_event_moving_source {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.scheduler_traditional_linkpoint {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.scheduler_traditional_linkpoint.scheduler_traditional_linkpoint_hover {
+    background-color: black;
+}
+
+.scheduler_traditional_event.scheduler_traditional_event_version .scheduler_traditional_event_inner {
+    background-color: #cfdde8;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+}
+
+.scheduler_traditional_crosshair_vertical,
+.scheduler_traditional_crosshair_horizontal,
+.scheduler_traditional_crosshair_left,
+.scheduler_traditional_crosshair_top {
+    background-color: gray;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+}
+
+.scheduler_traditional_link_dot {
+    border-radius: 10px;
+    background-color: red;
+}
+
+.scheduler_traditional_task_milestone .scheduler_traditional_event_inner {
+    position: absolute;
+    top: 16%;
+    left: 16%;
+    right: 16%;
+    bottom: 16%;
+    background: #38761d;
+    border: 0px none;
+    transform: rotate(45deg);
+    filter: none;
+}
+
+.scheduler_traditional_event_left {
+    white-space: nowrap;
+    padding-top: 5px;
+    color: #666;
+    cursor: default;
+}
+
+.scheduler_traditional_event_right {
+    white-space: nowrap;
+    padding-top: 5px;
+    color: #666;
+    cursor: default;
+}
+
+.scheduler_traditional_selectionrectangle {
+    background-color: #0000ff;
+    border: 1px solid #000033;
+    opacity: 0.4;
+}
+
+.scheduler_traditional_link_shadow {
+    border: 1px solid black;
+}
+
+.scheduler_traditional_link_shadow_circle {
+    background-color: black;
+}
+
+.scheduler_traditional_block {
+    background-color: #808080;
+    opacity: 0.5;
+}
