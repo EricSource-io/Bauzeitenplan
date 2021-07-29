@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 import React from "react";
 import {
@@ -8,28 +9,81 @@ import {
   MenuButton,
   Menu,
   ThumbtackSlashIcon,
+  addDays,
 } from "@fluentui/react-northstar";
 
 export default class Scheduler {
   config = {
+    size: {
+      cell: 40
+    },
     days: 365,
     resources: [],
     events: [],
+    months: [
+      {
+        name: "Januar",
+        days: 31,
+      },
+      {
+        name: "Februar",
+        days: 28,
+      },
+      {
+        name: "März",
+        days: 31,
+      },
+      {
+        name: "April",
+        days: 30,
+      },
+      {
+        name: "Mai",
+        days: 31,
+      },
+      {
+        name: "Juni",
+        days: 30,
+      },
+      {
+        name: "Juli",
+        days: 31,
+      },
+      {
+        name: "August",
+        days: 31,
+      },
+      {
+        name: "September",
+        days: 30,
+      },
+      {
+        name: "Oktober",
+        days: 31,
+      },
+      {
+        name: "November",
+        days: 30,
+      },
+      {
+        name: "Dezember",
+        days: 31,
+      },
+    ],
   };
-  months = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ];
+
+  ref = {
+    scheduler_default_scrollable: React.createRef(),
+    scheduler_default_timeheader_scroll: React.createRef(),
+  };
+
+  syncScroll() {
+    var timeheader = document.getElementById(
+      "scheduler_default_timeheader_scroll"
+    );
+    var defaultScroll = document.getElementById("scheduler_default_scrollable");
+    timeheader.scrollLeft = defaultScroll.scrollLeft;
+  }
 
   update() {}
 
@@ -40,8 +94,7 @@ export default class Scheduler {
           key={resource.id}
           style={{
             position: "absolute",
-            //40 column height
-            top: (resource.id - 1) * 40 + "px",
+            top: (resource.id - 1) * this.config.size.cell + "px",
             width: "128px",
             border: "0px none",
           }}
@@ -88,12 +141,55 @@ export default class Scheduler {
               key={day.toString() + row.toString()}
               className="scheduler_cell"
               style={{
-                top: (row * 40).toString() + "px",
-                left: (day * 40).toString() + "px",
+                top: (row * this.config.size.cell ).toString() + "px",
+                left: (day * this.config.size.cell ).toString() + "px",
               }}
             />
           );
         }
+      }
+      return itemList;
+    },
+    Timeheader_Month: () => {
+      let itemList = this.config.months.map((month) => (
+        <div
+          style={{
+            width: (month.days * this.config.size.cell ).toString() + "px",
+          }}
+        >
+          {month.name}
+        </div>
+      ));
+      return itemList;
+    },
+    Timeheader_Day: () => {
+      let itemList = [];
+      let current = {
+        day: 0,
+        month: 0,
+        year: 0,
+      };
+
+      for (var day = 0; day < this.config.days; day++) {
+        let month = this.config.months[current.month];
+        console.log(current);
+        current.day++;
+        if (current.day > month.days) {
+          current.month++;
+          current.day = 1;
+        }
+
+        itemList.push(
+          <div
+            key={day}
+            className="scheduler_timeheader_day"
+            style={{
+              left: (day * this.config.size.cell ).toString() + "px",
+            }}
+          >
+            {current.day}
+          </div>
+        );
       }
       return itemList;
     },
@@ -107,9 +203,13 @@ export default class Scheduler {
               height: "388px",
             }}
           >
-            <div id="scheduler_divider_vertical" style={{
-              height: ((this.config.resources.length * 40) + 110).toString() + "px"
-            }}/>
+            <div
+              id="scheduler_divider_vertical"
+              style={{
+                height:
+                  (this.config.resources.length * this.config.size.cell  + 110).toString() + "px",
+              }}
+            />
             <div id="scheduler_divider_horizontal" />
 
             <div id="scheduler_sidebar">
@@ -120,70 +220,34 @@ export default class Scheduler {
               <div id="scheduler_resource_table">
                 <this.HTML.ResourceList />
 
-                <div id="scheduler_default_rowEnd" style={{top: ((this.config.resources.length * 40)).toString() + "px"}}/>
-                
-              </div>
-            </div>
-            <div style={{ width: "18140px", height: "90px" }}>
-              <div style={{ position: "relative" }}>
                 <div
-                  className="scheduler_timeheadergroup"
-                  style={{ left: "0px" }}
-                >
-                  <div className="scheduler_timeheadergroup_inner" />
-                  <div
-                    unselectable="on"
-                    className="scheduler_timeheader_float"
-                    style={{
-                      position: "absolute",
-                      inset: "0px 0px 0px 0px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      className="scheduler_timeheader_float_inner"
-                      unselectable="on"
-                    >
-                      November 2022
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="scheduler_timeheadergroup"
-                  style={{ left: "1080px" }}
-                >
-                  <div className="scheduler_timeheadergroup_inner" />
-                  <div
-                    unselectable="on"
-                    className="scheduler_timeheader_float"
-                    style={{
-                      position: "absolute",
-                      inset: "0px 0px 0px 0px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      className="scheduler_timeheader_float_inner"
-                      unselectable="on"
-                    >
-                      Dezember 2022
-                    </div>
-                  </div>
-                </div>
+                  id="scheduler_default_rowEnd"
+                  style={{
+                    top: (this.config.resources.length * this.config.size.cell ).toString() + "px",
+                  }}
+                />
               </div>
             </div>
           </div>
+          <div
+            id="scheduler_default_timeheader_scroll"
+            ref={this.ref.scheduler_default_timeheader_scroll}
+          >
+            <this.HTML.Timeheader_Day />
+          </div>
+          <div
+            id="scheduler_default_scrollable"
+            ref={this.ref.scheduler_default_scrollable}
+            onScroll={this.syncScroll}
+            style={{
+              height:
+                (this.config.resources.length * this.config.size.cell  + 20).toString() + "px",
+            }}
+          >
+            <div className="scheduler_matrix_horizontal_line"></div>
 
-            <div
-              className="scheduler_default_scrollable"
-              style={{
-                height: ((this.config.resources.length * 40) + 20).toString() + "px",
-              }}
-            >
-              <div className="scheduler_matrix_horizontal_line"></div>
-              <this.HTML.Cells />
-            </div>
-       
+            <this.HTML.Cells />
+          </div>
         </div>
       );
     },

@@ -102,7 +102,7 @@
 }
 
 .scheduler_cell {
-    background-color: rgb(255 255 255);
+    background-color: rgb(255, 255, 255);
     position: absolute;
     width: 40px;
     height: 40px;
@@ -165,10 +165,32 @@
     padding: 3px;
 }
 
-.scheduler_default_scrollable {
+#scheduler_default_timeheader_scroll {
+    overflow: hidden;
+    display: block;
+    position: absolute;
+    top: 61px;
+    left: 129px;
+    width: calc(100% - 128px);
+    height: 90px;
+}
+
+.scheduler_timeheader_day {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0;
+    border-bottom: 1px solid rgb(236, 236, 236);
+    border-right: 1px solid rgb(236, 236, 236);
+    text-align: center;
+    line-height: 40px;
+}
+
+#scheduler_default_scrollable {
     overflow: auto;
     position: absolute;
-    width: 100%;
+    width: calc(100% - 128px);
     top: 151px;
     left: 129px;
 }
