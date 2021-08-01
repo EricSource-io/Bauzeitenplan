@@ -55,7 +55,7 @@ export default function Tab() {
   ];
   return (
     <div>
-      <div id="ctrButtonContainer">
+      <div id="buttonHeader">
         <MenuButton
           trigger={<Button icon={<MenuIcon />} />}
           menu={[

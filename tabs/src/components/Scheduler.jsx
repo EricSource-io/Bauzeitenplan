@@ -15,7 +15,7 @@ import {
 export default class Scheduler {
   config = {
     size: {
-      cell: 40
+      cell: 40,
     },
     days: 365,
     resources: [],
@@ -141,8 +141,8 @@ export default class Scheduler {
               key={day.toString() + row.toString()}
               className="scheduler_cell"
               style={{
-                top: (row * this.config.size.cell ).toString() + "px",
-                left: (day * this.config.size.cell ).toString() + "px",
+                top: (row * this.config.size.cell).toString() + "px",
+                left: (day * this.config.size.cell).toString() + "px",
               }}
             />
           );
@@ -151,10 +151,22 @@ export default class Scheduler {
       return itemList;
     },
     Timeheader_Month: () => {
-      let itemList = this.config.months.map((month) => (
+      let getLeftPositioning = (currentMonth, currentIndex) => {
+        var days = 0;
+        this.config.months.forEach((month, index) => {
+          if (index >= currentIndex)  return;
+          days += month.days;
+        });
+        console.log(days)
+        return days * this.config.size.cell;
+      };
+      let itemList = this.config.months.map((month, index) => (
         <div
+          key={month.name}
+          className="scheduler_timeheader_month"
           style={{
-            width: (month.days * this.config.size.cell ).toString() + "px",
+            width: (month.days * this.config.size.cell).toString() + "px",
+            left: getLeftPositioning(month, index).toString() + "px",
           }}
         >
           {month.name}
@@ -172,7 +184,7 @@ export default class Scheduler {
 
       for (var day = 0; day < this.config.days; day++) {
         let month = this.config.months[current.month];
-        console.log(current);
+      
         current.day++;
         if (current.day > month.days) {
           current.month++;
@@ -184,7 +196,7 @@ export default class Scheduler {
             key={day}
             className="scheduler_timeheader_day"
             style={{
-              left: (day * this.config.size.cell ).toString() + "px",
+              left: (day * this.config.size.cell).toString() + "px",
             }}
           >
             {current.day}
@@ -207,7 +219,10 @@ export default class Scheduler {
               id="scheduler_divider_vertical"
               style={{
                 height:
-                  (this.config.resources.length * this.config.size.cell  + 110).toString() + "px",
+                  (
+                    this.config.resources.length * this.config.size.cell +
+                    105
+                  ).toString() + "px",
               }}
             />
             <div id="scheduler_divider_horizontal" />
@@ -223,7 +238,10 @@ export default class Scheduler {
                 <div
                   id="scheduler_default_rowEnd"
                   style={{
-                    top: (this.config.resources.length * this.config.size.cell ).toString() + "px",
+                    top:
+                      (
+                        this.config.resources.length * this.config.size.cell
+                      ).toString() + "px",
                   }}
                 />
               </div>
@@ -233,6 +251,7 @@ export default class Scheduler {
             id="scheduler_default_timeheader_scroll"
             ref={this.ref.scheduler_default_timeheader_scroll}
           >
+            <this.HTML.Timeheader_Month />
             <this.HTML.Timeheader_Day />
           </div>
           <div
@@ -241,7 +260,10 @@ export default class Scheduler {
             onScroll={this.syncScroll}
             style={{
               height:
-                (this.config.resources.length * this.config.size.cell  + 20).toString() + "px",
+                (
+                  this.config.resources.length * this.config.size.cell +
+                  15
+                ).toString() + "px",
             }}
           >
             <div className="scheduler_matrix_horizontal_line"></div>

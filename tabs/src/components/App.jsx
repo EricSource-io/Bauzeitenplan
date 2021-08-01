@@ -16,7 +16,7 @@ import TabConfig from "./TabConfig";
 export default function App() {
   const { theme, loading } = useTeamsFx();
   return (
-    <Provider theme={theme || teamsTheme} styles={{ backgroundColor: "#f5f5f5" }} >
+    <Provider theme={theme || teamsTheme} styles={{ backgroundColor: "transparent" }} >
       
       <Router>
         <Route exact path="/">
