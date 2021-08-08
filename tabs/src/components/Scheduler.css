@@ -3,6 +3,7 @@
     line-height: 1.2;
     position: relative;
     border: 1px solid #999;
+    border-bottom: none;
     font-family: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
     font-size: 14px;
 }
@@ -117,22 +118,6 @@
     border-right: 1px solid rgb(236, 236, 236);
 }
 
-.scheduler_matrix_horizontal_line {
-    left: 0px;
-    top: 34px;
-    width: 13140px;
-    height: 1px;
-    font-size: 1px;
-    line-height: 1px;
-    overflow: hidden;
-    position: absolute;
-}
-
-.scheduler_matrix_horizontal_line,
-.scheduler_matrix_vertical_line {
-    background-color: #eee;
-}
-
 .scheduler_timeheadergroup {
     position: absolute;
     top: 0px;
@@ -187,20 +172,30 @@
     position: absolute;
     width: 40px;
     height: 40px;
+    line-height: 40px;
     bottom: 0;
     border-right: 1px solid rgb(236, 236, 236);
     text-align: center;
-    line-height: 40px;
 }
 
 .scheduler_timeheader_month {
     background-color: rgb(206, 206, 206);
     position: absolute;
-    height: 50px;
+    height: 25px;
+    line-height: 25px;
     top: 0;
     border-right: 5px solid rgb(206, 141, 141);
     text-align: center;
-    line-height: 50px;
+}
+
+.scheduler_timeheader_week {
+    background-color: rgb(230, 227, 227);
+    position: absolute;
+    height: 25px;
+    line-height: 25px;
+    top: 25px;
+    border-right: 5px solid rgb(206, 141, 141);
+    text-align: center;
 }
 
 #scheduler_default_scrollable {
