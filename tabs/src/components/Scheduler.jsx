@@ -172,27 +172,32 @@ export default class Scheduler {
       return itemList;
     },
     Timeheader_Month: () => {
-      let year = 2021;
+      let startDate = this.config.date.start;
+      let endDate = this.config.date.end;
       const daysBetween = this.getDaysBetween(
         this.config.date.start,
         this.config.date.end
       );
       let currentDate = new Date(this.config.date.start);
-      let getLeftPositioning = (currentMonth, currentIndex) => {
-        var days = 0;
-        /* this.config.months.forEach((month, index) => {
-          if (index >= currentIndex) return;
-          days += month.days;
-        });
-        return days * this.config.size.cell;*/
-        return 0;
+
+      let offsetX = 0;
+      let getLeftPositioning = () => {
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        const isStartEqualCurrentDate =
+          startDate.getMonth() === currentMonth &&
+          startDate.getFullYear() === currentYear;
+        offsetX += getUsedDaysOfMonth() * this.config.size.cell;
+        console.log(getUsedDaysOfMonth());
+        if (isStartEqualCurrentDate) {
+          return 0;
+        }
+        return offsetX - getUsedDaysOfMonth() * this.config.size.cell;
       };
 
       let getUsedDaysOfMonth = () => {
-        let startDate = this.config.date.start;
-        let endDate = this.config.date.end;
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
 
         const isStartEqualCurrentDate =
           startDate.getMonth() === currentMonth &&
@@ -204,7 +209,6 @@ export default class Scheduler {
         if (isStartEqualCurrentDate || isEndEqualCurrentDate) {
           if (isStartEqualCurrentDate && isEndEqualCurrentDate) {
             return this.getDaysBetween(startDate, endDate);
-            
           } else if (isStartEqualCurrentDate) {
             let date = new Date(startDate);
             date.setMonth(date.getMonth() + 1);
@@ -212,7 +216,6 @@ export default class Scheduler {
             return this.getDaysBetween(startDate, date);
           } else {
             let date = new Date(endDate);
-            console.log(date.getMonth() - 1)
             date.setDate(1);
             return this.getDaysBetween(date, endDate);
           }
@@ -220,33 +223,31 @@ export default class Scheduler {
           return this.getDaysInMonth(currentDate);
         }
       };
+
       let itemList = [];
       let monthCache = null;
       for (var day = 0; day < daysBetween; day++) {
         currentDate.setDate(currentDate.getDate() + 1);
 
-
         if (monthCache !== currentDate.getMonth()) {
           monthCache = currentDate.getMonth();
+
+          itemList.push(
+            <div
+              key={currentDate}
+              className="scheduler_timeheader_month"
+              style={{
+                width:
+                  (getUsedDaysOfMonth() * this.config.size.cell).toString() +
+                  "px",
+                left: getLeftPositioning().toString() + "px",
+                userSelect: "none",
+              }}
+            >
+              {currentDate.toLocaleString("de-DE", { month: "long" })} {currentDate.getFullYear()}
+            </div>
+          );
         }
-
-        let monthDays = this.getDaysInMonth(currentDate);
-
-        itemList.push(
-          <div
-            key={currentDate}
-            className="scheduler_timeheader_month"
-            style={{
-              width:
-                (getUsedDaysOfMonth() * this.config.size.cell).toString() +
-                "px",
-              left: getLeftPositioning(currentDate).toString() + "px",
-              userSelect: "none",
-            }}
-          >
-            {currentDate.toLocaleString("de-DE", { month: "long" })} {year}
-          </div>
-        );
       }
       return itemList;
     },
@@ -264,11 +265,19 @@ export default class Scheduler {
           (currentdate - oneJan) / (24 * 60 * 60 * 1000)
         );
         var result = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
+        console.log(result, "week number")
       };
       let itemList = [];
-      //A year has 53 weeks
-      let year = 2021;
+      // A year has 53 weeks
+      let year = this.config.date.start.getFullYear();
+
+      //TESCHT
       getWeekNumber(new Date(year, 0, 1));
+      getWeekNumber(new Date(year, 1, 1));
+      getWeekNumber(new Date(year, 11, 1));
+      //TESCHT
+
+
       for (let week = 0; week < 53; week++) {
         let weekDays = 7;
         if (week === 0) {
@@ -281,7 +290,6 @@ export default class Scheduler {
           let day = date.getDay();
           weekDays = 1 + days - (days - day);
         }
-
         itemList.push(
           <div
             key={week.toString() + "2021"}
@@ -292,7 +300,7 @@ export default class Scheduler {
               userSelect: "none",
             }}
           >
-            KW{week !== 0 ? week : 53}
+            KW{week !== 0 ? week : 53}{" "}
           </div>
         );
       }
@@ -316,7 +324,7 @@ export default class Scheduler {
               userSelect: "none",
             }}
           >
-            {currentDate.getDate()}
+            {currentDate.getDate()}{" "}
           </div>
         );
         currentDate.setDate(currentDate.getDate() + 1);
@@ -327,12 +335,7 @@ export default class Scheduler {
       return (
         <div>
           <this.HTML.Dialog />
-          <div
-            id="scheduler_main"
-            style={{
-              height: "388px",
-            }}
-          >
+          <div id="scheduler_main" style={{ height: "388px" }}>
             <div
               id="scheduler_divider_vertical"
               style={{

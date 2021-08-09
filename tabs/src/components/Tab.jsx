@@ -22,10 +22,10 @@ export default function Tab() {
     resourceEvent: document.getElementById("resourceEvent"),
   };
   var scheduler = new Scheduler();
-  //Wenn Datum selected wird einen Tag am EndDate hinzufügen
+  //Wenn Datum selected werden zwei Tag am EndDate hinzufügen
   scheduler.config.date = {
     start: new Date(2021, 0, 1),
-    end: new Date(2021, 1, 3)
+    end: new Date(2021, 1, 5)
   }
   scheduler.config.resources = [
     { id: 1, name: "Rückbau" },
