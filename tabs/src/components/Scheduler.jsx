@@ -102,7 +102,8 @@ export default class Scheduler {
       let itemList = [];
       for (
         var day = 0;
-        day <= this.getDaysBetween(this.config.date.start, this.config.date.end);
+        day <=
+        this.getDaysBetween(this.config.date.start, this.config.date.end);
         day++
       ) {
         for (var row = 0; row < this.config.resources.length; row++) {
@@ -175,8 +176,6 @@ export default class Scheduler {
       let itemList = [];
       let monthCache = null;
       for (var day = 0; day <= daysBetween; day++) {
-       
-
         if (monthCache !== currentDate.getMonth()) {
           monthCache = currentDate.getMonth();
 
@@ -197,7 +196,7 @@ export default class Scheduler {
             </div>
           );
         }
-         currentDate.setDate(currentDate.getDate() + 1);
+        currentDate.setDate(currentDate.getDate() + 1);
       }
       return itemList;
     },
@@ -215,41 +214,52 @@ export default class Scheduler {
 
       let getLeftPositioning = () => {
         offsetX += 7 * this.config.size.cell;
-     
+
         return offsetX - 7 * this.config.size.cell;
       };
 
       let getWeekNumber = () => {
-        let oneJan = new Date(currentDate.getFullYear(), 0, 1);
-        let numberOfDays = Math.floor(
-          (currentDate - oneJan) / (24 * 60 * 60 * 1000)
-        );
-        //let result = Math.ceil((currentDate.getDay()  + 1 + numberOfDays) / 7);
-        let result = Math.ceil((currentDate.getDay() + 1 + numberOfDays) / 7);
+        var month = currentDate.getMonth() + 1; // use 1-12
+        var year = currentDate.getFullYear();
+        var day = currentDate.getDate();
+        var a = Math.floor((14 - month) / 12);
+        var y = year + 4800 - a;
+        var m = month + 12 * a - 3;
+        var jd =
+          day +
+          Math.floor((153 * m + 2) / 5) +
+          365 * y +
+          Math.floor(y / 4) -
+          Math.floor(y / 100) +
+          Math.floor(y / 400) -
+          32045; // (gregorian calendar)
 
-        return result ;
+        //calc weeknumber
+        var d4 = (((jd + 31741 - (jd % 7)) % 146097) % 36524) % 1461;
+        var L = Math.floor(d4 / 1460);
+        var d1 = ((d4 - L) % 365) + L;
+        var NumberOfWeek = Math.floor(d1 / 7) + 1;
+        return NumberOfWeek;
       };
 
       let itemList = [];
       let weekCache = null;
 
       for (var day = 0; day <= daysBetween; day++) {
-
-      
         const weekNumber = getWeekNumber();
 
-       console.log(weekNumber,"=", day)
-        if (weekCache !== weekNumber ) {
+        console.log(weekNumber, "=", day);
+        if (weekCache !== weekNumber) {
           weekCache = weekNumber;
-          console.log(currentDate.getDate())
-          let width = 7;
+
+          let width = 7; //get the amount of days inside a specific
 
           itemList.push(
             <div
               key={weekNumber.toString() + currentDate.toDateString()}
               className="scheduler_timeheader_week"
               style={{
-                width: (width) * this.config.size.cell + "px",
+                width: width * this.config.size.cell + "px",
                 left: getLeftPositioning().toString() + "px",
                 userSelect: "none",
               }}
@@ -257,7 +267,8 @@ export default class Scheduler {
               KW{weekNumber}
             </div>
           );
-        }
+          
+        } 
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
