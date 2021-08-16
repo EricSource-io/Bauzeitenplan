@@ -157,7 +157,7 @@ export default class Scheduler {
 
         if (isStartEqualCurrentDate || isEndEqualCurrentDate) {
           if (isStartEqualCurrentDate && isEndEqualCurrentDate) {
-            return this.getDaysBetween(startDate, endDate);
+            return this.getDaysBetween(startDate, endDate) + 1;
           } else if (isStartEqualCurrentDate) {
             let date = new Date(startDate);
             date.setMonth(date.getMonth() + 1);
@@ -201,7 +201,6 @@ export default class Scheduler {
       return itemList;
     },
     Timeheader_Week: () => {
-      let startDate = this.config.date.start;
       let endDate = this.config.date.end;
 
       const daysBetween = this.getDaysBetween(
@@ -212,16 +211,10 @@ export default class Scheduler {
       let currentDate = new Date(this.config.date.start);
       let offsetX = 0;
 
-      let getLeftPositioning = () => {
-        offsetX += 7 * this.config.size.cell;
-
-        return offsetX - 7 * this.config.size.cell;
-      };
-
-      let getWeekNumber = () => {
-        var month = currentDate.getMonth() + 1; // use 1-12
-        var year = currentDate.getFullYear();
-        var day = currentDate.getDate();
+      let getWeekNumber = (date) => {
+        var month = date.getMonth() + 1; // use 1-12
+        var year = date.getFullYear();
+        var day = date.getDate();
         var a = Math.floor((14 - month) / 12);
         var y = year + 4800 - a;
         var m = month + 12 * a - 3;
@@ -241,25 +234,42 @@ export default class Scheduler {
         var NumberOfWeek = Math.floor(d1 / 7) + 1;
         return NumberOfWeek;
       };
+      let getLeftPositioning = () => {
+        const weekNumber = getWeekNumber(currentDate);
+        const usedDays = getUsedDaysOfWeek(weekNumber);
+        offsetX += usedDays * this.config.size.cell;
+        return offsetX - usedDays * this.config.size.cell;
+      };
+
+      let getUsedDaysOfWeek = (weekNumber) => {
+        const date = new Date(currentDate);
+        let days = 0;
+        const lastDay = new Date(endDate);
+        lastDay.setDate(lastDay.getDate() + 1);
+        while (
+          weekNumber === getWeekNumber(date) &&
+          date.toString() !== lastDay.toString()
+        ) {
+          date.setDate(date.getDate() + 1);
+          days++;
+        }
+        return days;
+      };
 
       let itemList = [];
       let weekCache = null;
 
       for (var day = 0; day <= daysBetween; day++) {
-        const weekNumber = getWeekNumber();
-
-        console.log(weekNumber, "=", day);
+        const weekNumber = getWeekNumber(currentDate);
         if (weekCache !== weekNumber) {
+          let width = getUsedDaysOfWeek(weekNumber) * this.config.size.cell;
           weekCache = weekNumber;
-
-          let width = 7; //get the amount of days inside a specific
-
           itemList.push(
             <div
               key={weekNumber.toString() + currentDate.toDateString()}
               className="scheduler_timeheader_week"
               style={{
-                width: width * this.config.size.cell + "px",
+                width: width + "px",
                 left: getLeftPositioning().toString() + "px",
                 userSelect: "none",
               }}
@@ -267,8 +277,8 @@ export default class Scheduler {
               KW{weekNumber}
             </div>
           );
-          
-        } 
+        }
+
         currentDate.setDate(currentDate.getDate() + 1);
       }
 

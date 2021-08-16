@@ -25,7 +25,7 @@ export default function Tab() {
 
   scheduler.config.date = {
     start: new Date(2021, 0, 1),
-    end: new Date(2022, 11, 31)
+    end: new Date(2021, 0, 11)
   }
   scheduler.config.resources = [
     { id: 1, name: "Rückbau" },
