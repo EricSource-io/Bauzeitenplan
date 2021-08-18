@@ -1,8 +1,3 @@
-@import url('themes/scheduler_8.css');
-@import url('themes/scheduler_green.css');
-@import url('themes/scheduler_traditional.css');
-@import url('themes/scheduler_transparent.css');
-@import url('themes/scheduler_white.css');
 * {
     box-sizing: border-box;
     /* outline: 1px dashed #f00; */

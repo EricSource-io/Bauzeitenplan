@@ -25,39 +25,36 @@ export default function Tab() {
 
   scheduler.config.date = {
     start: new Date(2021, 0, 1),
-    end: new Date(2021, 0, 11)
-  }
+    end: new Date(2021, 1, 14),
+  };
   scheduler.config.resources = [
-    { id: 1, name: "Rückbau" },
-    { id: 2, name: "Putzarbeiten" },
-    { id: 3, name: "Trockenbau" },
-    { id: 4, name: "Estrich Bad/Küche" },
-    { id: 5, name: "Sanitär Rückbau" },
-    { id: 6, name: "Fliesenleger" },
-    { id: 7, name: "Feinreinigung" },
-    { id: 8, name: "Tischler" },
-    { id: 9, name: "Elektriker" },
+    { id: 0, name: "Rückbau", color: ""},
+    { id: 1, name: "Putzarbeiten", color: "" },
+    { id: 2, name: "Trockenbau", color: "" },
+    { id: 3, name: "Estrich Bad/Küche", color: "" },
+    { id: 4, name: "Sanitär Rückbau", color: "" },
+    { id: 5, name: "Fliesenleger", color: "" },
+    { id: 6, name: "Feinreinigung", color: "" },
+    { id: 7, name: "Tischler", color: "" },
+    { id: 8, name: "Elektriker", color: "" },
   ];
   scheduler.config.events = [
     {
-      id: 1,
-      start: "2021-07-04T00:00:00",
-      end: "2021-07-08T00:00:00",
-      text: "Event 1",
-    },
-    {
       id: 2,
-      start: "2021-07-12T00:00:00",
-      end: "2021-07-16T00:00:00",
-      text: "Event 2",
+      start: "2021-01-04T00:00:00",
+      end: "2021-01-14T00:00:00",
+      text: "Trocknen",
+      
     },
     {
-      id: 3,
-      start: "2021-01-07T00:00:00",
-      end: "2021-01-14T00:00:00",
-      text: "Event 3",
+      id: 4,
+      start: "2021-01-14",
+      end: "2021-01-17",
+      text: "Bodenfliesen",
+      
     },
   ];
+  const [stateResources, setStateResources] = scheduler.config.dialog.resources;
   return (
     <div>
       <div id="buttonHeader">
@@ -79,6 +76,7 @@ export default function Tab() {
           primary
           content="Ressourcen verwalten"
           className="ctrButton"
+          onClick={() => setStateResources(true)}
         ></Button>
         <Button
           icon={<AddIcon />}

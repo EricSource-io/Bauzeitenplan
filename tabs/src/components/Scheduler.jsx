@@ -1,22 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 import React from "react";
-import {
-  Button,
-  Input,
-  Dropdown,
-  Flex,
-  MenuButton,
-  Menu,
-  ThumbtackSlashIcon,
-  addDays,
-} from "@fluentui/react-northstar";
 
+import { Dialog } from "@fluentui/react-northstar";
 export default class Scheduler {
   config = {
     date: {
       start: new Date(),
       end: new Date(),
+    },
+    dialog: {
+      resources: React.useState(false),
+      event: React.useState(false)
     },
     size: {
       cell: 40,
@@ -37,8 +32,6 @@ export default class Scheduler {
     var defaultScroll = document.getElementById("scheduler_default_scrollable");
     timeheader.scrollLeft = defaultScroll.scrollLeft;
   }
-
-  update() {}
 
   getDaysBetween(startDate, endDate) {
     var daysBetween = Math.floor(
@@ -61,13 +54,16 @@ export default class Scheduler {
           key={resource.id}
           style={{
             position: "absolute",
-            top: (resource.id - 1) * this.config.size.cell + "px",
+            top: (resource.id - 1) * this.config.size.cell,
             width: "128px",
             border: "0px none",
           }}
           unselectable="on"
         >
-          <div className="scheduler_resource">
+          <div
+            className="scheduler_resource"
+            style={{ height: this.config.size.cell }}
+          >
             <div className="scheduler_resource_inner">{resource.name}</div>
             <div className="scheduler_resourcedivider" />
           </div>
@@ -76,49 +72,75 @@ export default class Scheduler {
       return itemList;
     },
     Dialog: () => {
+      const [state, setState] = this.config.dialog.resources;
       return (
-        <div id="dialog">
-          <div id="dialogBackgroundShader"></div>
-          <div id="dialogBody">
-            <p id="dialogTitle">Erstelle ein neues Event:</p>
-            <Input fluid placeholder="Event 1" id="inputEvent" />
-            <Dropdown
-              fluid
-              style={{ marginTop: "10px" }}
-              items={this.config}
-              id="resourceEvent"
-            />
-            <Flex gap="gap.smaller" style={{ marginTop: "7px" }}>
-              <Input fluid type="date" label="Start:" />
-              <Input fluid type="date" label="Ende:" id="dateEndEvent" />
-            </Flex>
-            <Button primary content="Erstellen" id="addBtnEvent"></Button>
-            <Button content="Abbrechen" id="closeBtnEvent"></Button>
-          </div>
-        </div>
+        <Dialog
+          open={state}
+          content={
+            <>
+              <h2>Ressourcen verwalten</h2>
+              <p>Rückbau</p>
+              <p>Putzarbeiten</p>
+              <p>Trockenbau</p>
+              <p>...</p>
+            </>
+          }
+          cancelButton="Schließen"
+          onCancel={() => setState(!state)}
+        />
       );
     },
     Cells: () => {
       let itemList = [];
       for (
-        var day = 0;
+        let day = 0;
         day <=
         this.getDaysBetween(this.config.date.start, this.config.date.end);
         day++
       ) {
-        for (var row = 0; row < this.config.resources.length; row++) {
+        for (let row = 0; row < this.config.resources.length; row++) {
           itemList.push(
             <div
               key={day.toString() + row.toString()}
               className="scheduler_cell"
               style={{
-                top: (row * this.config.size.cell).toString() + "px",
-                left: (day * this.config.size.cell).toString() + "px",
+                top: row * this.config.size.cell,
+                left: day * this.config.size.cell,
+                height: this.config.size.cell,
+                width: this.config.size.cell,
               }}
             />
           );
         }
       }
+      return itemList;
+    },
+    Events: () => {
+      let itemList = this.config.events.map((event) => {
+        let getLeftPositioning = () => {
+          return (
+            this.getDaysBetween(this.config.date.start, event.start) *
+            this.config.size.cell
+          );
+        };
+        return (
+          <div
+            className="scheduler_default_event"
+            key={event.id}
+            style={{
+              width:
+                this.getDaysBetween(event.start, event.end) *
+                this.config.size.cell,
+              left: getLeftPositioning(),
+              top: event.id  * this.config.size.cell,
+              height: this.config.size.cell,
+              lineHeight: this.config.size.cell + "px",
+            }}
+          >
+            {event.text}
+          </div>
+        );
+      });
       return itemList;
     },
     Timeheader_Month: () => {
@@ -175,7 +197,7 @@ export default class Scheduler {
 
       let itemList = [];
       let monthCache = null;
-      for (var day = 0; day <= daysBetween; day++) {
+      for (let day = 0; day <= daysBetween; day++) {
         if (monthCache !== currentDate.getMonth()) {
           monthCache = currentDate.getMonth();
 
@@ -184,10 +206,8 @@ export default class Scheduler {
               key={currentDate}
               className="scheduler_timeheader_month"
               style={{
-                width:
-                  (getUsedDaysOfMonth() * this.config.size.cell).toString() +
-                  "px",
-                left: getLeftPositioning().toString() + "px",
+                width: getUsedDaysOfMonth() * this.config.size.cell,
+                left: getLeftPositioning(),
                 userSelect: "none",
               }}
             >
@@ -259,7 +279,7 @@ export default class Scheduler {
       let itemList = [];
       let weekCache = null;
 
-      for (var day = 0; day <= daysBetween; day++) {
+      for (let day = 0; day <= daysBetween; day++) {
         const weekNumber = getWeekNumber(currentDate);
         if (weekCache !== weekNumber) {
           let width = getUsedDaysOfWeek(weekNumber) * this.config.size.cell;
@@ -269,8 +289,8 @@ export default class Scheduler {
               key={weekNumber.toString() + currentDate.toDateString()}
               className="scheduler_timeheader_week"
               style={{
-                width: width + "px",
-                left: getLeftPositioning().toString() + "px",
+                width: width,
+                left: getLeftPositioning(),
                 userSelect: "none",
               }}
             >
@@ -291,14 +311,15 @@ export default class Scheduler {
         this.config.date.start,
         this.config.date.end
       );
-      for (var day = 0; day <= daysBetween; day++) {
+      for (let day = 0; day <= daysBetween; day++) {
         itemList.push(
           <div
             key={day}
             className="scheduler_timeheader_day"
             style={{
-              left: (day * this.config.size.cell).toString() + "px",
+              left: day * this.config.size.cell,
               userSelect: "none",
+              width: this.config.size.cell,
             }}
           >
             {currentDate.getDate()}
@@ -317,10 +338,7 @@ export default class Scheduler {
               id="scheduler_divider_vertical"
               style={{
                 height:
-                  (
-                    this.config.resources.length * this.config.size.cell +
-                    105
-                  ).toString() + "px",
+                  this.config.resources.length * this.config.size.cell + 105,
               }}
             />
             <div id="scheduler_divider_horizontal" />
@@ -336,10 +354,7 @@ export default class Scheduler {
                 <div
                   id="scheduler_default_rowEnd"
                   style={{
-                    top:
-                      (
-                        this.config.resources.length * this.config.size.cell
-                      ).toString() + "px",
+                    top: this.config.resources.length * this.config.size.cell,
                   }}
                 />
               </div>
@@ -358,14 +373,29 @@ export default class Scheduler {
             ref={this.ref.scheduler_default_scrollable}
             onScroll={this.syncScroll}
             style={{
-              height:
-                (
-                  this.config.resources.length * this.config.size.cell +
-                  15
-                ).toString() + "px",
+              height: this.config.resources.length * this.config.size.cell + 15,
             }}
           >
             <this.HTML.Cells />
+            <this.HTML.Events />
+          </div>
+          <div style={{ position: "absolute", top: "-10px", left: "200px" }}>
+            <p>
+              START:{" "}
+              {this.config.date.start.getDate() +
+                ". " +
+                (this.config.date.start.getMonth() + 1) +
+                " " +
+                this.config.date.start.getFullYear()}
+            </p>
+            <p>
+              ENDE:{" "}
+              {this.config.date.end.getDate() +
+                ". " +
+                (this.config.date.end.getMonth() + 1) +
+                " " +
+                this.config.date.end.getFullYear()}
+            </p>
           </div>
         </div>
       );

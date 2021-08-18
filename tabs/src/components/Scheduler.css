@@ -64,7 +64,6 @@
 
 .scheduler_resource {
     width: 128px;
-    height: 40px;
     overflow: hidden;
     position: relative;
 }
@@ -112,8 +111,6 @@
 .scheduler_cell {
     background-color: rgb(255, 255, 255);
     position: absolute;
-    width: 40px;
-    height: 40px;
     border-bottom: 1px solid rgb(236, 236, 236);
     border-right: 1px solid rgb(236, 236, 236);
 }
@@ -170,31 +167,33 @@
 .scheduler_timeheader_day {
     background-color: rgb(255, 255, 255);
     position: absolute;
-    width: 40px;
-    height: 40px;
     line-height: 40px;
     bottom: 0;
     border-right: 1px solid rgb(236, 236, 236);
     text-align: center;
+    height: 40px;
 }
 
 .scheduler_timeheader_month {
-    background-color: rgb(206, 206, 206);
+    background-color: #7B83EB;
+    color: #ffff;
     position: absolute;
     height: 25px;
     line-height: 25px;
     top: 0;
-    border-right: 5px solid rgb(206, 141, 141);
+    border-right: 1px solid #ffff;
     text-align: center;
+    font-size: 15px;
 }
 
 .scheduler_timeheader_week {
-    background-color: rgb(230, 227, 227);
+    background-color: #ffff;
     position: absolute;
     height: 25px;
     line-height: 25px;
     top: 25px;
-    border-right: 5px solid rgb(206, 141, 141);
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     text-align: center;
 }
 
@@ -205,4 +204,14 @@
     width: calc(100% - 128px);
     top: 151px;
     left: 129px;
+}
+
+.scheduler_default_event {
+    position: absolute;
+    background-color: #7B83EB;
+    color: #ffff;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
