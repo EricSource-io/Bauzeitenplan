@@ -54,7 +54,7 @@ export default class Scheduler {
           key={resource.id}
           style={{
             position: "absolute",
-            top: (resource.id - 1) * this.config.size.cell,
+            top: (resource.id) * this.config.size.cell,
             width: "128px",
             border: "0px none",
           }}
