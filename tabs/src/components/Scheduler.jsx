@@ -2,16 +2,25 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
-import { Dialog } from "@fluentui/react-northstar";
+import {
+  Dialog,
+  Input,
+  Dropdown,
+  EditIcon,
+  Flex,
+  FlexItem,
+  CallRecordingIcon
+} from "@fluentui/react-northstar";
 export default class Scheduler {
   config = {
     date: {
       start: new Date(),
       end: new Date(),
     },
+    colors: [{name: "Blau", hex: "#ccc"}, {name: "Grün", hex: "#ccc"}, {name: "Rot", hex: "#ccc"}, {name: "Gelb", hex: "#ccc"}],
     dialog: {
       resources: React.useState(false),
-      event: React.useState(false)
+      event: React.useState(false),
     },
     size: {
       cell: 40,
@@ -54,7 +63,7 @@ export default class Scheduler {
           key={resource.id}
           style={{
             position: "absolute",
-            top: (resource.id) * this.config.size.cell,
+            top: resource.id * this.config.size.cell,
             width: "128px",
             border: "0px none",
           }}
@@ -72,21 +81,44 @@ export default class Scheduler {
       return itemList;
     },
     Dialog: () => {
-      const [state, setState] = this.config.dialog.resources;
+      const [stateResources, setStateResources] = this.config.dialog.resources;
+      const [stateEvent, setStateEvent] = this.config.dialog.event;
+      let ResourceItems = () => {
+        let itemList = this.config.resources.map((res) => {
+          return (
+            <div className="resource_item" key={res.id + "resource"}>
+              <Flex gap="gap.medium">
+                <FlexItem>
+                  <Input
+                    className="resource_item_name"
+                    icon={<EditIcon />}
+                    value={res.name}
+                    type="text"
+                  />
+                </FlexItem>
+                <FlexItem>
+                  <Dropdown className="resource_item_color"  items={this.config.colors.map(c => c.name)}/>
+                </FlexItem>
+              </Flex>
+            </div>
+          );
+        });
+        return itemList;
+      };
+
       return (
         <Dialog
-          open={state}
+          open={stateResources}
           content={
             <>
-              <h2>Ressourcen verwalten</h2>
-              <p>Rückbau</p>
-              <p>Putzarbeiten</p>
-              <p>Trockenbau</p>
-              <p>...</p>
+              <h2 className="dialog_title">Ressourcen verwalten</h2>
+              <div className="dialog_content">
+                <ResourceItems />
+              </div>
             </>
           }
           cancelButton="Schließen"
-          onCancel={() => setState(!state)}
+          onCancel={() => setStateResources(false)}
         />
       );
     },
@@ -126,13 +158,16 @@ export default class Scheduler {
         return (
           <div
             className="scheduler_default_event"
-            key={event.id}
+            key={event.id + "event"}
             style={{
+              backgroundColor: this.config.resources.find(
+                (res) => res.id === event.id
+              ).color,
               width:
                 this.getDaysBetween(event.start, event.end) *
                 this.config.size.cell,
               left: getLeftPositioning(),
-              top: event.id  * this.config.size.cell,
+              top: event.id * this.config.size.cell,
               height: this.config.size.cell,
               lineHeight: this.config.size.cell + "px",
             }}
@@ -331,7 +366,7 @@ export default class Scheduler {
     },
     Scheduler: () => {
       return (
-        <div>
+        <>
           <this.HTML.Dialog />
           <div id="scheduler_main" style={{ height: "388px" }}>
             <div
@@ -397,7 +432,7 @@ export default class Scheduler {
                 this.config.date.end.getFullYear()}
             </p>
           </div>
-        </div>
+        </>
       );
     },
   };

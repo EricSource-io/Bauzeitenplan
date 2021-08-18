@@ -28,19 +28,19 @@ export default function Tab() {
     end: new Date(2021, 1, 14),
   };
   scheduler.config.resources = [
-    { id: 0, name: "Rückbau", color: ""},
-    { id: 1, name: "Putzarbeiten", color: "" },
-    { id: 2, name: "Trockenbau", color: "" },
-    { id: 3, name: "Estrich Bad/Küche", color: "" },
-    { id: 4, name: "Sanitär Rückbau", color: "" },
-    { id: 5, name: "Fliesenleger", color: "" },
-    { id: 6, name: "Feinreinigung", color: "" },
-    { id: 7, name: "Tischler", color: "" },
-    { id: 8, name: "Elektriker", color: "" },
+    { id: 0, name: "Rückbau", color: "#7B83EB"},
+    { id: 1, name: "Putzarbeiten", color: "#7B83EB" },
+    { id: 2, name: "Trockenbau", color:  "#7B83EB" },
+    { id: 3, name: "Estrich Bad/Küche", color: "#7B83EB"},
+    { id: 4, name: "Sanitär Rückbau", color: "#7B83EB"},
+    { id: 5, name: "Fliesenleger", color: "#7B83EB" },
+    { id: 6, name: "Feinreinigung", color: "#7B83EB" },
+    { id: 7, name: "Tischler", color:  "#7B83EB" },
+    { id: 8, name: "Elektriker", color:  "#7B83EB" },
   ];
   scheduler.config.events = [
     {
-      id: 2,
+      id: 3,
       start: "2021-01-04T00:00:00",
       end: "2021-01-14T00:00:00",
       text: "Trocknen",
@@ -55,6 +55,7 @@ export default function Tab() {
     },
   ];
   const [stateResources, setStateResources] = scheduler.config.dialog.resources;
+  
   return (
     <div>
       <div id="buttonHeader">

@@ -208,10 +208,28 @@
 
 .scheduler_default_event {
     position: absolute;
-    background-color: #7B83EB;
     color: #ffff;
     text-align: center;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
+
+.dialog_title {
+    position: absolute;
+    top: 0;
+}
+
+.dialog_content {
+    margin-top: 20px;
+    max-height: 250px;
+    overflow-y: scroll;
+}
+
+.resource_item {
+    margin-top: 10px;
+}
+
+.resource_item_name {}
+
+.resource_item_color {}
