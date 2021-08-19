@@ -28,15 +28,15 @@ export default function Tab() {
     end: new Date(2021, 1, 14),
   };
   scheduler.config.resources = [
-    { id: 0, name: "Rückbau", color: "#7B83EB"},
-    { id: 1, name: "Putzarbeiten", color: "#7B83EB" },
-    { id: 2, name: "Trockenbau", color:  "#7B83EB" },
-    { id: 3, name: "Estrich Bad/Küche", color: "#7B83EB"},
-    { id: 4, name: "Sanitär Rückbau", color: "#7B83EB"},
-    { id: 5, name: "Fliesenleger", color: "#7B83EB" },
-    { id: 6, name: "Feinreinigung", color: "#7B83EB" },
-    { id: 7, name: "Tischler", color:  "#7B83EB" },
-    { id: 8, name: "Elektriker", color:  "#7B83EB" },
+    { id: 0, name: "Rückbau", color: "#7b83eb"},
+    { id: 1, name: "Putzarbeiten", color: "#8bc34a" },
+    { id: 2, name: "Trockenbau", color:  "#7b83eb" },
+    { id: 3, name: "Estrich Bad/Küche", color: "#7b83eb"},
+    { id: 4, name: "Sanitär Rückbau", color: "#f44336"},
+    { id: 5, name: "Fliesenleger", color: "#7b83eb" },
+    { id: 6, name: "Feinreinigung", color: "#7b83eb" },
+    { id: 7, name: "Tischler", color:  "#7b83eb" },
+    { id: 8, name: "Elektriker", color:  "#7b83eb" },
   ];
   scheduler.config.events = [
     {

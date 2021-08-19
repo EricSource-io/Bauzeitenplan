@@ -5,11 +5,11 @@ import React from "react";
 import {
   Dialog,
   Input,
-  Dropdown,
+  Button,
   EditIcon,
   Flex,
   FlexItem,
-  CallRecordingIcon
+  CallRecordingIcon,
 } from "@fluentui/react-northstar";
 export default class Scheduler {
   config = {
@@ -17,7 +17,12 @@ export default class Scheduler {
       start: new Date(),
       end: new Date(),
     },
-    colors: [{name: "Blau", hex: "#ccc"}, {name: "Grün", hex: "#ccc"}, {name: "Rot", hex: "#ccc"}, {name: "Gelb", hex: "#ccc"}],
+    colors: [
+      { name: "Blau", hex: "#7b83eb" },
+      { name: "Grün", hex: "#8bc34a" },
+      { name: "Rot", hex: "#f44336" },
+      { name: "Orange", hex: "#ff9800" },
+    ],
     dialog: {
       resources: React.useState(false),
       event: React.useState(false),
@@ -84,20 +89,31 @@ export default class Scheduler {
       const [stateResources, setStateResources] = this.config.dialog.resources;
       const [stateEvent, setStateEvent] = this.config.dialog.event;
       let ResourceItems = () => {
+        let colorChange = (resource) => {
+          
+        }
         let itemList = this.config.resources.map((res) => {
+          const color = this.config.colors.find((e) => e.hex === res.color);
           return (
             <div className="resource_item" key={res.id + "resource"}>
               <Flex gap="gap.medium">
                 <FlexItem>
                   <Input
-                    className="resource_item_name"
                     icon={<EditIcon />}
-                    value={res.name}
+                    placeholder={res.name}
+                    clearable
                     type="text"
+                    fluid
                   />
                 </FlexItem>
                 <FlexItem>
-                  <Dropdown className="resource_item_color"  items={this.config.colors.map(c => c.name)}/>
+                  <Button
+                    icon={<CallRecordingIcon style={{ color: color.hex, position: "absolute", right: 15}} />}
+                    iconPosition="after"
+                    onClick={colorChange(res)}
+                    content={color.name}
+                    style={{ borderColor: color.hex, minWidth: 100}}
+                  ></Button>
                 </FlexItem>
               </Flex>
             </div>
@@ -109,6 +125,7 @@ export default class Scheduler {
       return (
         <Dialog
           open={stateResources}
+          id="dialog_resource"
           content={
             <>
               <h2 className="dialog_title">Ressourcen verwalten</h2>
@@ -117,7 +134,11 @@ export default class Scheduler {
               </div>
             </>
           }
-          cancelButton="Schließen"
+          cancelButton="Abbrechen"
+          confirmButton="Speichern"
+          onConfirm={() => {
+            setStateResources(false); /*SAVE Data*/
+          }}
           onCancel={() => setStateResources(false)}
         />
       );

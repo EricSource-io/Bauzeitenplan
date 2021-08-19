@@ -230,6 +230,6 @@
     margin-top: 10px;
 }
 
-.resource_item_name {}
-
-.resource_item_color {}
+#dialog_resource {
+    max-width: 500;
+}
