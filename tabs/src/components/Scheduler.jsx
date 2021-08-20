@@ -170,7 +170,7 @@ export class Scheduler {
                       colorChange();
                     }}
                     content={colorState.name}
-                    style={{ borderColor: colorState.color, minWidth: 100 }}
+                    style={{ borderColor: colorState.hex, minWidth: 100 }}
                   ></Button>
                 </FlexItem>
               </Flex>
