@@ -14,7 +14,7 @@ import {
   MenuIcon,
 } from "@fluentui/react-icons-northstar";
 import "./Scheduler.css";
-import Scheduler from "./Scheduler.jsx";
+import { Scheduler, Resource } from "./Scheduler.jsx";
 
 export default function Tab() {
   var dialogEvent = {
@@ -28,15 +28,15 @@ export default function Tab() {
     end: new Date(2021, 1, 14),
   };
   scheduler.config.resources = [
-    { id: 0, name: "Rückbau", color: "#7b83eb"},
-    { id: 1, name: "Putzarbeiten", color: "#8bc34a" },
-    { id: 2, name: "Trockenbau", color:  "#7b83eb" },
-    { id: 3, name: "Estrich Bad/Küche", color: "#7b83eb"},
-    { id: 4, name: "Sanitär Rückbau", color: "#f44336"},
-    { id: 5, name: "Fliesenleger", color: "#7b83eb" },
-    { id: 6, name: "Feinreinigung", color: "#7b83eb" },
-    { id: 7, name: "Tischler", color:  "#7b83eb" },
-    { id: 8, name: "Elektriker", color:  "#7b83eb" },
+    new Resource(0, "Rückbau", "#7b83eb"),
+    new Resource(1, "Putzarbeiten", "#7b83eb"),
+    new Resource(2, "Trockenbau", "#7b83eb"),
+    new Resource(3, "Estrich Bad/Küche", "#8bc34a"),
+    new Resource(4, "Sanitär Rückbau", "#7b83eb"),
+    new Resource(5, "Fliesenleger", "#7b83eb"),
+    new Resource(6, "Feinreinigung", "#7b83eb"),
+    new Resource(7, "Tischler", "#7b83eb"),
+    new Resource(8, "Elektriker", "#7b83eb")
   ];
   scheduler.config.events = [
     {
@@ -44,18 +44,17 @@ export default function Tab() {
       start: "2021-01-04T00:00:00",
       end: "2021-01-14T00:00:00",
       text: "Trocknen",
-      
     },
     {
       id: 4,
       start: "2021-01-14",
       end: "2021-01-17",
       text: "Bodenfliesen",
-      
     },
   ];
   const [stateResources, setStateResources] = scheduler.config.dialog.resources;
-  
+  const [stateEvent, setStateEvent] = scheduler.config.dialog.event;
+
   return (
     <div>
       <div id="buttonHeader">
@@ -85,6 +84,7 @@ export default function Tab() {
           content="Neu"
           className="ctrButton"
           style={{ marginRight: "10px" }}
+          onClick={() => setStateEvent(true)}
         ></Button>
       </div>
       <scheduler.HTML.Scheduler />

@@ -10,8 +10,30 @@ import {
   Flex,
   FlexItem,
   CallRecordingIcon,
+  Segment,
+  Dropdown,
 } from "@fluentui/react-northstar";
-export default class Scheduler {
+
+export class Resource {
+  constructor(id, name, color) {
+    this.state = React.useState({ name: name, color: color });
+    this.name = name;
+    this.color = color;
+    this.id = id;
+  }
+  setColor(color) {
+    const [state, setState] = this.state;
+    this.color = color;
+    setState({ name: this.name, color: color });
+  }
+  setName(name) {
+    const [state, setState] = this.state;
+    this.name = name;
+    setState({ name: name, color: this.color });
+  }
+}
+
+export class Scheduler {
   config = {
     date: {
       start: new Date(),
@@ -21,7 +43,7 @@ export default class Scheduler {
       { name: "Blau", hex: "#7b83eb" },
       { name: "Grün", hex: "#8bc34a" },
       { name: "Rot", hex: "#f44336" },
-      { name: "Orange", hex: "#ff9800" },
+      { name: "Gelb", hex: "#ff9800" },
     ],
     dialog: {
       resources: React.useState(false),
@@ -33,12 +55,10 @@ export default class Scheduler {
     resources: [],
     events: [],
   };
-
   ref = {
     scheduler_default_scrollable: React.createRef(),
     scheduler_default_timeheader_scroll: React.createRef(),
   };
-
   syncScroll() {
     var timeheader = document.getElementById(
       "scheduler_default_timeheader_scroll"
@@ -46,7 +66,6 @@ export default class Scheduler {
     var defaultScroll = document.getElementById("scheduler_default_scrollable");
     timeheader.scrollLeft = defaultScroll.scrollLeft;
   }
-
   getDaysBetween(startDate, endDate) {
     var daysBetween = Math.floor(
       (Date.parse(endDate) - Date.parse(startDate)) / (24 * 60 * 60 * 1000)
@@ -63,56 +82,95 @@ export default class Scheduler {
   getDaysOf;
   HTML = {
     ResourceList: () => {
-      const itemList = this.config.resources.map((resource) => (
-        <div
-          key={resource.id}
-          style={{
-            position: "absolute",
-            top: resource.id * this.config.size.cell,
-            width: "128px",
-            border: "0px none",
-          }}
-          unselectable="on"
-        >
+      const itemList = this.config.resources.map((resource) => {
+        const [state, setState] = resource.state;
+        return (
           <div
-            className="scheduler_resource"
-            style={{ height: this.config.size.cell }}
+            key={resource.id}
+            style={{
+              position: "absolute",
+              top: resource.id * this.config.size.cell,
+              width: "128px",
+              border: "0px none",
+            }}
+            unselectable="on"
           >
-            <div className="scheduler_resource_inner">{resource.name}</div>
-            <div className="scheduler_resourcedivider" />
+            <div
+              className="scheduler_resource"
+              style={{ height: this.config.size.cell }}
+            >
+              <div className="scheduler_resource_inner">{state.name}</div>
+              <div className="scheduler_resourcedivider" />
+            </div>
           </div>
-        </div>
-      ));
+        );
+      });
       return itemList;
     },
     Dialog: () => {
       const [stateResources, setStateResources] = this.config.dialog.resources;
       const [stateEvent, setStateEvent] = this.config.dialog.event;
+      let changedNames = [];
+      let changedColors = [];
       let ResourceItems = () => {
-        let colorChange = (resource) => {
-          
-        }
-        let itemList = this.config.resources.map((res) => {
-          const color = this.config.colors.find((e) => e.hex === res.color);
+        let itemList = this.config.resources.map((resource) => {
+          const [state, setState] = resource.state;
+          const [colorState, setColorState] = React.useState(
+            this.config.colors.find((e) => e.hex === state.color)
+          );
+          let colorChange = () => {
+            let nextColor = () => {
+              let index = this.config.colors.indexOf(colorState);
+              if (index === this.config.colors.length - 1) {
+                index = 0;
+              } else {
+                index++;
+              }
+              return this.config.colors[index];
+            };
+            //EDIT nicht sofort updaten erst wenn fertig
+            //  resource.setColor(nextColor());
+            changedColors[resource.id] = nextColor();
+            setColorState(nextColor());
+          };
+
           return (
-            <div className="resource_item" key={res.id + "resource"}>
+            <div className="resource_item" key={resource.id + "resource"}>
               <Flex gap="gap.medium">
                 <FlexItem>
                   <Input
                     icon={<EditIcon />}
-                    placeholder={res.name}
+                    placeholder={state.name}
                     clearable
                     type="text"
                     fluid
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (value !== undefined) {
+                        changedNames[resource.id] = value;
+                      } else {
+                        changedNames.splice(resource.id, 1);
+                      }
+                    }}
                   />
                 </FlexItem>
                 <FlexItem>
                   <Button
-                    icon={<CallRecordingIcon style={{ color: color.hex, position: "absolute", right: 15}} />}
+                    icon={
+                      <CallRecordingIcon
+                        style={{
+                          color: colorState.hex,
+                          position: "absolute",
+                          right: 15,
+                        }}
+                      />
+                    }
                     iconPosition="after"
-                    onClick={colorChange(res)}
-                    content={color.name}
-                    style={{ borderColor: color.hex, minWidth: 100}}
+                    onClick={(e) => {
+                      colorChange();
+                    }}
+                    content={colorState.name}
+                    style={{ borderColor: colorState.color, minWidth: 100 }}
                   ></Button>
                 </FlexItem>
               </Flex>
@@ -123,24 +181,57 @@ export default class Scheduler {
       };
 
       return (
-        <Dialog
-          open={stateResources}
-          id="dialog_resource"
-          content={
-            <>
-              <h2 className="dialog_title">Ressourcen verwalten</h2>
-              <div className="dialog_content">
-                <ResourceItems />
-              </div>
-            </>
-          }
-          cancelButton="Abbrechen"
-          confirmButton="Speichern"
-          onConfirm={() => {
-            setStateResources(false); /*SAVE Data*/
-          }}
-          onCancel={() => setStateResources(false)}
-        />
+        <>
+          <Dialog
+            open={stateResources}
+            id="dialog_resource"
+            content={
+              <>
+                <h2 className="dialog_title">Ressourcen verwalten</h2>
+                <div className="dialog_content">
+                  <ResourceItems />
+                </div>
+              </>
+            }
+            confirmButton="Fertig"
+            onConfirm={() => {
+              changedNames.forEach((i) => {
+                this.config.resources
+                  .find((e) => e.id === changedNames.indexOf(i))
+                  .setName(i);
+              });
+              changedColors.forEach((i) => {
+                this.config.resources
+                  .find((e) => e.id === changedColors.indexOf(i))
+                  .setColor(i.hex);
+              });
+              setStateResources(false);
+            }}
+          />
+          <Dialog
+            open={stateEvent}
+            id="dialog_resource"
+            content={
+              <>
+                <h2 className="dialog_title">Event hinzufügen</h2>
+                <div className="dialog_content">
+                  <Flex column>
+                    <Input label="Name:" />
+                    <Dropdown
+                      items={this.config.resources.map((res) => res.name)}
+                    />
+                  </Flex>
+                </div>
+              </>
+            }
+            cancelButton="Abbrechen"
+            confirmButton="Hinzufügen"
+            onConfirm={() => {
+              setStateEvent(false); /*SAVE Data*/
+            }}
+            onCancel={() => setStateEvent(false)}
+          />
+        </>
       );
     },
     Cells: () => {
@@ -182,8 +273,8 @@ export default class Scheduler {
             key={event.id + "event"}
             style={{
               backgroundColor: this.config.resources.find(
-                (res) => res.id === event.id
-              ).color,
+                (resource) => resource.id === event.id
+              ).state[0].color,
               width:
                 this.getDaysBetween(event.start, event.end) *
                 this.config.size.cell,

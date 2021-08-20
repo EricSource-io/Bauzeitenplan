@@ -221,9 +221,7 @@
 }
 
 .dialog_content {
-    margin-top: 20px;
-    max-height: 250px;
-    overflow-y: scroll;
+    margin-top: 35px;
 }
 
 .resource_item {
