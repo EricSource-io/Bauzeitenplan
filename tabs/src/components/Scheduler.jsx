@@ -112,12 +112,36 @@ export class Scheduler {
       const [stateEvent, setStateEvent] = this.config.dialog.event;
       let changedNames = [];
       let changedColors = [];
+
+      const [stateEventData, setEventData] = React.useState({
+        name: `Event ${this.config.events.length + 1}`,
+        resource: "",
+        date: {
+          start: new Date(),
+          end: new Date(),
+        },
+      });
+
+      let createEvent = () => {};
+
+      let handleEventNameInput = (event) => {
+        setEventData({
+          name: event.target.value,
+          resource: stateEventData.resource,
+          date: {
+            start: stateEventData.date.start,
+            end: stateEventData.date.end,
+          },
+        });
+      };
+
       let ResourceItems = () => {
         let itemList = this.config.resources.map((resource) => {
           const [state, setState] = resource.state;
           const [colorState, setColorState] = React.useState(
             this.config.colors.find((e) => e.hex === state.color)
           );
+
           let colorChange = () => {
             let nextColor = () => {
               let index = this.config.colors.indexOf(colorState);
@@ -179,10 +203,58 @@ export class Scheduler {
         });
         return itemList;
       };
-
       return (
         <>
           <Dialog
+            closeOnOutsideClick={false}
+            open={stateEvent}
+            id="dialog_resource"
+            content={
+              <>
+                <h2 className="dialog_title">Event hinzufügen</h2>
+                <div className="dialog_content">
+                  <Flex column gap="gap.small">
+                    <Input
+                      label="Name:"
+                      type="text"
+                      value={stateEventData.name}
+                      onChange={(e) => handleEventNameInput(e)}
+                      fluid
+                    />
+                    <Dropdown
+                      placeholder="Wähle ein Gewerk aus"
+                      items={this.config.resources.map((res) => res.name)}
+                      fluid
+                    />
+                    <Flex gap="gap.small">
+                      <Input
+                        type="date"
+                        label="Von:"
+                     //   value={stateEventData.date.start}
+                        fluid
+                      />
+                      <Input
+                        type="date"
+                        label="Bis:"
+                       // value={stateEventData.date.end}
+                        fluid
+                      />
+                    </Flex>
+                  </Flex>
+                </div>
+              </>
+            }
+            cancelButton="Abbrechen"
+            confirmButton="Hinzufügen"
+            onConfirm={() => {
+              createEvent();
+              setStateEvent(false); /*SAVE Data*/
+            }}
+            onCancel={() => setStateEvent(false)}
+          />
+
+          <Dialog
+            closeOnOutsideClick={false}
             open={stateResources}
             id="dialog_resource"
             content={
@@ -207,29 +279,7 @@ export class Scheduler {
               });
               setStateResources(false);
             }}
-          />
-          <Dialog
-            open={stateEvent}
-            id="dialog_resource"
-            content={
-              <>
-                <h2 className="dialog_title">Event hinzufügen</h2>
-                <div className="dialog_content">
-                  <Flex column>
-                    <Input label="Name:" />
-                    <Dropdown
-                      items={this.config.resources.map((res) => res.name)}
-                    />
-                  </Flex>
-                </div>
-              </>
-            }
-            cancelButton="Abbrechen"
-            confirmButton="Hinzufügen"
-            onConfirm={() => {
-              setStateEvent(false); /*SAVE Data*/
-            }}
-            onCancel={() => setStateEvent(false)}
+            
           />
         </>
       );
