@@ -16,20 +16,16 @@ import {
 
 export class Resource {
   constructor(id, name, color) {
-    this.state = React.useState({ name: name, color: color });
-    this.name = name;
-    this.color = color;
     this.id = id;
+    this.state = React.useState({ name: name, color: color });
   }
   setColor(color) {
     const [state, setState] = this.state;
-    this.color = color;
-    setState({ name: this.name, color: color });
+    setState({ name: state.name, color: color });
   }
   setName(name) {
     const [state, setState] = this.state;
-    this.name = name;
-    setState({ name: name, color: this.color });
+    setState({ name: name, color: state.color });
   }
 }
 
@@ -79,7 +75,7 @@ export class Scheduler {
       0
     ).getDate();
   }
-  getDaysOf;
+
   HTML = {
     ResourceList: () => {
       const itemList = this.config.resources.map((resource) => {
@@ -152,10 +148,9 @@ export class Scheduler {
               }
               return this.config.colors[index];
             };
-            //EDIT nicht sofort updaten erst wenn fertig
-            //  resource.setColor(nextColor());
-            changedColors[resource.id] = nextColor();
-            setColorState(nextColor());
+            let color = nextColor();
+            changedColors[resource.id] = { id: resource.id, color: color };
+            setColorState(color);
           };
 
           return (
@@ -171,7 +166,10 @@ export class Scheduler {
                     onChange={(e) => {
                       let value = e.target.value;
                       if (value !== undefined) {
-                        changedNames[resource.id] = value;
+                        changedNames[resource.id] = {
+                          id: resource.id,
+                          value: value,
+                        };
                       } else {
                         changedNames.splice(resource.id, 1);
                       }
@@ -230,13 +228,13 @@ export class Scheduler {
                       <Input
                         type="date"
                         label="Von:"
-                     //   value={stateEventData.date.start}
+                        //   value={stateEventData.date.start}
                         fluid
                       />
                       <Input
                         type="date"
                         label="Bis:"
-                       // value={stateEventData.date.end}
+                        // value={stateEventData.date.end}
                         fluid
                       />
                     </Flex>
@@ -267,19 +265,24 @@ export class Scheduler {
             }
             confirmButton="Fertig"
             onConfirm={() => {
-              changedNames.forEach((i) => {
+              //FIXME
+              /* changedColors.indexOf(i) is -1  */
+              // console.log(changedNames)
+              changedNames.forEach((resource) => {
                 this.config.resources
-                  .find((e) => e.id === changedNames.indexOf(i))
-                  .setName(i);
+                  .find((e) => e.id === resource.id)
+                  .setName(resource.value);
               });
-              changedColors.forEach((i) => {
+              //FIXME
+
+              changedColors.forEach((resource) => {
                 this.config.resources
-                  .find((e) => e.id === changedColors.indexOf(i))
-                  .setColor(i.hex);
+                  .find((e) => e.id === resource.id)
+                  .setColor(resource.color.hex);
               });
-              setStateResources(false);
+              //Close Dialog
+              setStateResources(false); /*SAVE Data*/
             }}
-            
           />
         </>
       );
@@ -459,8 +462,8 @@ export class Scheduler {
       };
 
       let getUsedDaysOfWeek = (weekNumber) => {
-        const date = new Date(currentDate);
         let days = 0;
+        const date = new Date(currentDate);
         const lastDay = new Date(endDate);
         lastDay.setDate(lastDay.getDate() + 1);
         while (
@@ -530,7 +533,7 @@ export class Scheduler {
       return (
         <>
           <this.HTML.Dialog />
-          <div id="scheduler_main" style={{ height: "388px" }}>
+          <div id="scheduler_main">
             <div
               id="scheduler_divider_vertical"
               style={{

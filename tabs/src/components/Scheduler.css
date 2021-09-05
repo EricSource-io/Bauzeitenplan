@@ -96,8 +96,6 @@
     background-color: rgb(255, 255, 255);
 }
 
-#scheduler_scroll_background {}
-
 .scheduler_resourcedivider {
     position: absolute;
     bottom: 0px;

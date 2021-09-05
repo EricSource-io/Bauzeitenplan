@@ -81,7 +81,7 @@ export default function Tab() {
         <Button
           icon={<AddIcon />}
           primary
-          content="Neu"
+          content="Event"
           className="ctrButton"
           style={{ marginRight: "10px" }}
           onClick={() => setStateEvent(true)}

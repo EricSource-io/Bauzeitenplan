@@ -1,0 +1,38 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.7/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.7",
+    "version": "1.0.1",
+    "id": "1ba7f7c8-d3ed-4cb2-99a8-86a4801efd80",
+    "packageName": "Bauzeitenplan",
+    "developer": {
+        "name": "Eric Wolf",
+        "websiteUrl": "https://bauzeitplan-fe0ce.web.app/",
+        "privacyUrl": "https://bauzeitplan-fe0ce.web.app/#/privacy",
+        "termsOfUseUrl": "https://bauzeitplan-fe0ce.web.app/#/termsofuse"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "Bauzeitenplan",
+        "full": "Bauzeitenplan"
+    },
+    "description": {
+        "short": "Bauzeitenplan",
+        "full": "Bauzeitenplan - Kalender"
+    },
+    "accentColor": "#FFFFFF",
+    "configurableTabs": [{
+        "configurationUrl": "https://bauzeitplan-fe0ce.web.app/#/config",
+        "canUpdateConfiguration": false,
+        "scopes": [
+            "team"
+        ]
+    }],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ]
+
+}
