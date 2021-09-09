@@ -15,33 +15,21 @@ import {
   AddIcon,
 } from "@fluentui/react-northstar";
 
-export class ResourceList {
-  constructor(list) {
-    this.list = React.useState(list);
+export class Resource {
+  constructor(id, name, color, state) {
+    this.id = id;
+    
+    this.state = React.useState({ name: name, color: color }) ;
   }
-  getColor(id) {
-    const [state, setState] = this.list;
-    let color = state.filter((e) => e.id === id)[0].color;
-    return color;
+  setColor(color) {
+    const [state, setState] = this.state;
+    setState({ name: state.name, color: color });
   }
-  updateItem(item) {
-    //Item id cannot be changed
-    const [state, setState] = this.list;
-    let list = state;
-    let oldItem = list.find((e) => e.id === item.id);
-    let index = list.indexOf(oldItem);
-    list[index] = item;
-    setState(list);
+  setName(name) {
+    const [state, setState] = this.state;
+    setState({ name: name, color: state.color });
   }
 }
-
-ResourceList.Item = class {
-  constructor(id, name, color) {
-    this.id = id;
-    this.name = name;
-    this.color = color;
-  }
-};
 
 export class Event {
   constructor(id, start, end, text) {
@@ -81,14 +69,14 @@ export class Scheduler {
     size: {
       cell: 40,
     },
-    resources: [], //Die ganze liste als einen State benutzen und nicht jedem Objekt einen eigenen geben! ? Resourcen Klasse State entfernen!
+    resources: [], //Die ganze liste als einen State benutzen und nicht jedem Objekt einen eigenen geben! ? Resourcen Klasse State entfernen! 
     events: [],
-  };
+  }; 
   ref = {
     scheduler_default_scrollable: React.createRef(),
     scheduler_default_timeheader_scroll: React.createRef(),
   };
-
+  resLength = React.useState(this.config.resources.length);
   syncScroll() {
     var timeheader = document.getElementById(
       "scheduler_default_timeheader_scroll"
@@ -111,11 +99,11 @@ export class Scheduler {
   }
   HTML = {
     ResourceList: () => {
-      const [state, setState] = this.config.resources.list;
-      const itemList = state.map((item, index) => {
+      const itemList = this.config.resources.map((resource, index) => {
+        const [state, setState] = resource.state;
         return (
           <div
-            key={item.id}
+            key={resource.id}
             style={{
               position: "absolute",
               top: index * this.config.size.cell,
@@ -128,7 +116,7 @@ export class Scheduler {
               className="scheduler_resource"
               style={{ height: this.config.size.cell }}
             >
-              <div className="scheduler_resource_inner">{item.name}</div>
+              <div className="scheduler_resource_inner">{state.name}</div>
               <div className="scheduler_resourcedivider" />
             </div>
           </div>
@@ -165,10 +153,10 @@ export class Scheduler {
       };
 
       let ResourceItems = () => {
-        const [state, setState] = this.config.resources.list;
-        let itemList = state.map((item) => {
+        let itemList = this.config.resources.map((resource) => {
+          const [state, setState] = resource.state;
           const [colorState, setColorState] = React.useState(
-            this.config.colors.find((e) => e.hex === item.color)
+            this.config.colors.find((e) => e.hex === state.color)
           );
 
           let colorChange = () => {
@@ -179,16 +167,15 @@ export class Scheduler {
               } else {
                 index++;
               }
-
               return this.config.colors[index];
             };
             let color = nextColor();
-            changedColors[item.id] = { id: item.id, color: color };
+            changedColors[resource.id] = { id: resource.id, color: color };
             setColorState(color);
           };
 
           return (
-            <div className="resource_item" key={item.id + "resource"}>
+            <div className="resource_item" key={resource.id + "resource"}>
               <Flex gap="gap.medium">
                 <FlexItem>
                   <Input
@@ -200,12 +187,12 @@ export class Scheduler {
                     onChange={(e) => {
                       let value = e.target.value;
                       if (value !== undefined) {
-                        changedNames[item.id] = {
-                          id: item.id,
+                        changedNames[resource.id] = {
+                          id: resource.id,
                           value: value,
                         };
                       } else {
-                        changedNames.splice(item.id, 1);
+                        changedNames.splice(resource.id, 1);
                       }
                     }}
                   />
@@ -237,10 +224,13 @@ export class Scheduler {
         return itemList;
       };
 
-      function createEvent() {}
+     function createEvent(){
+
+     }
 
       function createResource() {
-        //this.config.resources.list.push(a)
+         new Resource()
+        //this.config.resources.push(a)
       }
       return (
         <>
@@ -262,7 +252,7 @@ export class Scheduler {
                     />
                     <Dropdown
                       placeholder="Wähle ein Gewerk aus"
-                      items={""}
+                      items={this.config.resources.map((res) => res.name)}
                       fluid
                     />
                     <Flex gap="gap.small">
@@ -313,18 +303,16 @@ export class Scheduler {
             }
             confirmButton="Fertig"
             onConfirm={() => {
-              const [state, setState] = this.config.resources.list;
-
-              changedNames.forEach((i) => {
-                let item = state.find((e) => e.id === i.id);
-                item.name = i.value;
-                this.config.resources.updateItem(item);
+              changedNames.forEach((resource) => {
+                this.config.resources
+                  .find((e) => e.id === resource.id)
+                  .setName(resource.value);
               });
 
-              changedColors.forEach((i) => {
-                let item = state.find((e) => e.id === i.id);
-                item.color = i.color.hex;
-                this.config.resources.updateItem(item);
+              changedColors.forEach((resource) => {
+                this.config.resources
+                  .find((e) => e.id === resource.id)
+                  .setColor(resource.color.hex);
               });
               //Close Dialog
               setStateDialogResources(false); /*SAVE Data*/
@@ -334,7 +322,6 @@ export class Scheduler {
       );
     },
     Cells: () => {
-      const [state, setState] = this.config.resources.list;
       let itemList = [];
       for (
         let day = 0;
@@ -342,7 +329,7 @@ export class Scheduler {
         this.getDaysBetween(this.config.date.start, this.config.date.end);
         day++
       ) {
-        for (let row = 0; row < state.length; row++) {
+        for (let row = 0; row < this.config.resources.length; row++) {
           itemList.push(
             <div
               key={day.toString() + row.toString()}
@@ -373,7 +360,9 @@ export class Scheduler {
             className="scheduler_default_event"
             key={event.id + "event"}
             style={{
-              backgroundColor: this.config.resources.getColor(event.id),
+              backgroundColor: this.config.resources.find(
+                (resource) => resource.id === event.id
+              ).state[0].color,
               width:
                 this.getDaysBetween(state.start, state.end) *
                 this.config.size.cell,
@@ -576,7 +565,6 @@ export class Scheduler {
       return itemList;
     },
     Scheduler: () => {
-      const [state, setState] = this.config.resources.list;
       return (
         <>
           <this.HTML.Dialog />
@@ -584,7 +572,8 @@ export class Scheduler {
             <div
               id="scheduler_divider_vertical"
               style={{
-                height: state.length * this.config.size.cell + 105,
+                height:
+                  this.config.resources.length * this.config.size.cell + 105,
               }}
             />
             <div id="scheduler_divider_horizontal" />
@@ -600,7 +589,7 @@ export class Scheduler {
                 <div
                   id="scheduler_default_rowEnd"
                   style={{
-                    top: state.length * this.config.size.cell,
+                    top: this.config.resources.length * this.config.size.cell,
                   }}
                 />
               </div>
@@ -619,7 +608,7 @@ export class Scheduler {
             ref={this.ref.scheduler_default_scrollable}
             onScroll={this.syncScroll}
             style={{
-              height: state.length * this.config.size.cell + 15,
+              height: this.config.resources.length * this.config.size.cell + 15,
             }}
           >
             <this.HTML.Cells />

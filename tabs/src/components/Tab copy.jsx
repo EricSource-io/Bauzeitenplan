@@ -14,7 +14,7 @@ import {
   MenuIcon,
 } from "@fluentui/react-icons-northstar";
 import "./Scheduler.css";
-import { Scheduler,ResourceList, Event } from "./Scheduler.jsx";
+import { Scheduler, Resource, Event } from "./Scheduler.jsx";
 
 export default function Tab() {
   var dialogEvent = {
@@ -27,18 +27,18 @@ export default function Tab() {
     start: new Date(2021, 0, 1),
     end: new Date(2021, 1, 14),
   };
-  scheduler.config.resources = new ResourceList([
-    new ResourceList.Item(0, "Rückbau", "#7b83eb"),
-    new ResourceList.Item(1, "Putzarbeiten", "#7b83eb"),
-    new ResourceList.Item(2, "Trockenbau", "#7b83eb"),
-    new ResourceList.Item(3, "Estrich Bad/Küche", "#8bc34a"),
-    new ResourceList.Item(4, "Sanitär Rückbau", "#7b83eb"),
-    new ResourceList.Item(5, "Fliesenleger", "#7b83eb"),
-    new ResourceList.Item(6, "Feinreinigung", "#7b83eb"),
-    new ResourceList.Item(7, "Tischler", "#7b83eb"),
-    new ResourceList.Item(8, "Elektriker", "#7b83eb"),
+  scheduler.config.resources = [
+    new Resource(0, "Rückbau", "#7b83eb"),
+    new Resource(1, "Putzarbeiten", "#7b83eb"),
+    new Resource(2, "Trockenbau", "#7b83eb"),
+    new Resource(3, "Estrich Bad/Küche", "#8bc34a"),
+    new Resource(4, "Sanitär Rückbau", "#7b83eb"),
+    new Resource(5, "Fliesenleger", "#7b83eb"),
+    new Resource(6, "Feinreinigung", "#7b83eb"),
+    new Resource(7, "Tischler", "#7b83eb"),
+    new Resource(8, "Elektriker", "#7b83eb"),
     
-  ]);
+  ];
   scheduler.config.events = [
     new Event(3, "2021-01-04", "2021-01-14", "Trocknen"),
     new Event(4, "2021-01-14", "2021-01-17", "Bodenfliesen"),

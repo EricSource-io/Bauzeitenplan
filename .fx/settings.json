@@ -20,5 +20,7 @@
             "fx-resource-appstudio",
             "fx-resource-simple-auth"
         ]
-    }
+    },
+    "programmingLanguage": "javascript",
+    "defaultFunctionName": "getUserProfile"
 }
