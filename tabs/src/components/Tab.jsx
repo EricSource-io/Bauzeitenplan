@@ -65,7 +65,7 @@ export default function Tab() {
         <Button
           icon={<SettingsIcon />}
           primary
-          content="Ressourcen verwalten"
+          content="Gewerke verwalten"
           className="ctrButton"
           onClick={() => setStateResources(true)}
         ></Button>

@@ -25,12 +25,19 @@ export class ResourceList {
     return color;
   }
   updateItem(item) {
-    //Item id cannot be changed
+    //Item id cannot be changed !
     const [state, setState] = this.list;
     let list = state;
     let oldItem = list.find((e) => e.id === item.id);
     let index = list.indexOf(oldItem);
     list[index] = item;
+    setState(list);
+  }
+  addEmptyItem() {
+    const [state, setState] = this.list;
+    let list = state;
+    list.push(new ResourceList.Item(state.length, `Gewerk ${state.length}`, "#7b83eb"));
+    console.log(list);
     setState(list);
   }
 }
@@ -193,7 +200,7 @@ export class Scheduler {
                 <FlexItem>
                   <Input
                     icon={<EditIcon />}
-                    placeholder={state.name}
+                    placeholder={item.name}
                     clearable
                     type="text"
                     fluid
@@ -239,9 +246,6 @@ export class Scheduler {
 
       function createEvent() {}
 
-      function createResource() {
-        //this.config.resources.list.push(a)
-      }
       return (
         <>
           <Dialog
@@ -298,14 +302,17 @@ export class Scheduler {
             id="dialog_resource"
             content={
               <>
-                <h2 className="dialog_title">Ressourcen verwalten</h2>
+                <h2 className="dialog_title">Gewerke verwalten</h2>
                 <div className="dialog_content">
                   <Button
                     fluid
                     primary
-                    content="Ressource hinzufügen"
+                    content="Gewerk hinzufügen"
                     icon={<AddIcon />}
-                    onClick={createResource}
+                    onClick={() => 
+                      this.config.resources.addEmptyItem()
+
+                    }
                   />
                   <ResourceItems />
                 </div>
@@ -314,7 +321,6 @@ export class Scheduler {
             confirmButton="Fertig"
             onConfirm={() => {
               const [state, setState] = this.config.resources.list;
-
               changedNames.forEach((i) => {
                 let item = state.find((e) => e.id === i.id);
                 item.name = i.value;
