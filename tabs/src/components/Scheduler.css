@@ -226,6 +226,14 @@
     margin-top: 10px;
 }
 
-#dialog_resource {
-    max-width: 500;
+#dialog_resource_list {
+    max-height: 400px;
+    margin-top: 8px;
+    padding-bottom: 10px;
+    overflow-y: scroll;
+}
+
+#dialog_resource,
+#dialog_event {
+    max-width: 500px;
 }

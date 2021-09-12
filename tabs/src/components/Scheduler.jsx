@@ -33,11 +33,10 @@ export class ResourceList {
     list[index] = item;
     setState(list);
   }
-  addEmptyItem() {
+  addItem(item) {
     const [state, setState] = this.list;
     let list = state;
-    list.push(new ResourceList.Item(state.length, `Gewerk ${state.length}`, "#7b83eb"));
-    console.log(list);
+    list.push(item);
     setState(list);
   }
 }
@@ -83,12 +82,13 @@ export class Scheduler {
     ],
     dialog: {
       resources: React.useState(false),
+      addResource: React.useState(false),
       event: React.useState(false),
     },
     size: {
       cell: 40,
     },
-    resources: [], //Die ganze liste als einen State benutzen und nicht jedem Objekt einen eigenen geben! ? Resourcen Klasse State entfernen!
+    resources: [],
     events: [],
   };
   ref = {
@@ -144,12 +144,16 @@ export class Scheduler {
       return itemList;
     },
     Dialog: () => {
+      const [stateResourceList, setStateResourceList] =
+        this.config.resources.list;
       const [stateDialogResources, setStateDialogResources] =
         this.config.dialog.resources;
+      const [stateDialogAddResource, setStateDialogAddResource] =
+        this.config.dialog.addResource;
+      const [stateAddResourceColor, setStateAddResourceColor] = React.useState(
+        this.config.colors[0]
+      );
       const [stateDialogEvent, setStateDialogEvent] = this.config.dialog.event;
-
-      let changedNames = [];
-      let changedColors = [];
 
       const [stateEventData, setEventData] = React.useState({
         name: `Event ${this.config.events.length + 1}`,
@@ -160,7 +164,7 @@ export class Scheduler {
         },
       });
 
-      let handleEventNameInput = (event) => {
+      function handleEventNameInput(event) {
         setEventData({
           name: event.target.value,
           resource: stateEventData.resource,
@@ -169,6 +173,15 @@ export class Scheduler {
             end: stateEventData.date.end,
           },
         });
+      }
+
+      let colorChange = (index) => {
+        if (index === this.config.colors.length - 1) {
+          index = 0;
+        } else {
+          index++;
+        }
+        return this.config.colors[index];
       };
 
       let ResourceItems = () => {
@@ -177,22 +190,6 @@ export class Scheduler {
           const [colorState, setColorState] = React.useState(
             this.config.colors.find((e) => e.hex === item.color)
           );
-
-          let colorChange = () => {
-            let nextColor = () => {
-              let index = this.config.colors.indexOf(colorState);
-              if (index === this.config.colors.length - 1) {
-                index = 0;
-              } else {
-                index++;
-              }
-
-              return this.config.colors[index];
-            };
-            let color = nextColor();
-            changedColors[item.id] = { id: item.id, color: color };
-            setColorState(color);
-          };
 
           return (
             <div className="resource_item" key={item.id + "resource"}>
@@ -231,11 +228,15 @@ export class Scheduler {
                     }
                     iconPosition="after"
                     onClick={(e) => {
-                      colorChange();
+                      let color = colorChange(
+                        this.config.colors.indexOf(colorState)
+                      );
+                      changedColors[item.id] = { id: item.id, color: color };
+                      setColorState(color);
                     }}
                     content={colorState.name}
                     style={{ borderColor: colorState.hex, minWidth: 100 }}
-                  ></Button>
+                  />
                 </FlexItem>
               </Flex>
             </div>
@@ -246,12 +247,39 @@ export class Scheduler {
 
       function createEvent() {}
 
+      let changedNames = [];
+      let changedColors = [];
+
+      let saveChangedData = () => {
+        const [state, setState] = this.config.resources.list;
+        changedNames.forEach((i) => {
+          let item = state.find((e) => e.id === i.id);
+          item.name = i.value;
+          this.config.resources.updateItem(item);
+        });
+
+        changedColors.forEach((i) => {
+          let item = state.find((e) => e.id === i.id);
+          item.color = i.color.hex;
+          this.config.resources.updateItem(item);
+        });
+      };
+
+      let resourceDialogConfirm = () => {
+        saveChangedData();
+        //Close Dialog
+        setStateDialogResources(false); /*SAVE Data*/
+      };
+
+      //Resource add dialog
+      let inputResourceAdd = stateResourceList.length + 1;
+
       return (
         <>
           <Dialog
             closeOnOutsideClick={false}
             open={stateDialogEvent}
-            id="dialog_resource"
+            id="dialog_event"
             content={
               <>
                 <h2 className="dialog_title">Event hinzufügen</h2>
@@ -309,31 +337,95 @@ export class Scheduler {
                     primary
                     content="Gewerk hinzufügen"
                     icon={<AddIcon />}
-                    onClick={() => 
-                      this.config.resources.addEmptyItem()
-
-                    }
+                    onClick={() => {
+                      saveChangedData();
+                      setStateDialogResources(false);
+                      setStateDialogAddResource(true);
+                    }}
                   />
+                  <div id="dialog_resource_list">
+
+
                   <ResourceItems />
+                  </div>
                 </div>
               </>
             }
             confirmButton="Fertig"
+            onConfirm={resourceDialogConfirm}
+          />
+          <Dialog
+            closeOnOutsideClick={false}
+            open={stateDialogAddResource}
+            id="dialog_resource"
+            content={
+              <>
+                <h2 className="dialog_title">Gewerke hinzufügen</h2>
+                <div className="dialog_content">
+                  <Flex gap="gap.medium">
+                    <FlexItem>
+                      <Input
+                        icon={<EditIcon />}
+                        clearable
+                        placeholder={`Gewerk ${stateResourceList.length + 1}`}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          if (value !== undefined) {
+                            inputResourceAdd = value;
+                          } else {
+                            inputResourceAdd = stateResourceList.length + 1;
+                          }
+                        }}
+                        type="text"
+                        fluid
+                      />
+                    </FlexItem>
+                    <FlexItem>
+                      <Button
+                        circular
+                        icon={
+                          <CallRecordingIcon
+                            style={{
+                              color: stateAddResourceColor.hex,
+                              position: "absolute",
+                              right: 15,
+                            }}
+                          />
+                        }
+                        iconPosition="after"
+                        onClick={(e) => {
+                          let color = colorChange(
+                            this.config.colors.indexOf(stateAddResourceColor)
+                          );
+                          setStateAddResourceColor(color);
+                        }}
+                        content={stateAddResourceColor.name}
+                        style={{
+                          borderColor: stateAddResourceColor.hex,
+                          minWidth: 100,
+                        }}
+                      />
+                    </FlexItem>
+                  </Flex>
+                </div>
+              </>
+            }
+            cancelButton="Abbrechen"
+            confirmButton="Hinzufügen"
             onConfirm={() => {
-              const [state, setState] = this.config.resources.list;
-              changedNames.forEach((i) => {
-                let item = state.find((e) => e.id === i.id);
-                item.name = i.value;
-                this.config.resources.updateItem(item);
-              });
-
-              changedColors.forEach((i) => {
-                let item = state.find((e) => e.id === i.id);
-                item.color = i.color.hex;
-                this.config.resources.updateItem(item);
-              });
-              //Close Dialog
-              setStateDialogResources(false); /*SAVE Data*/
+              this.config.resources.addItem(
+                new ResourceList.Item(
+                  stateResourceList.length + 1,
+                  inputResourceAdd,
+                  stateAddResourceColor.hex
+                )
+              );
+              setStateDialogAddResource(false);
+              setStateDialogResources(true);
+            }}
+            onCancel={() => {
+              setStateDialogAddResource(false);
+              setStateDialogResources(true);
             }}
           />
         </>
@@ -351,7 +443,7 @@ export class Scheduler {
         for (let row = 0; row < state.length; row++) {
           itemList.push(
             <div
-              key={day.toString() + row.toString()}
+              key={`${row.toString()}_${day.toString()}`}
               className="scheduler_cell"
               style={{
                 top: row * this.config.size.cell,
