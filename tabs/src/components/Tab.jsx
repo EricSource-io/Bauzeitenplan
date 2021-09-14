@@ -28,7 +28,7 @@ export default function Tab() {
     end: new Date(2021, 1, 14),
   };
   scheduler.config.resources = new ResourceList([
-    new ResourceList.Item(0, "Rückbau", "#7b83eb"),
+    new ResourceList.Item(0, "Rückbau", "#ff9800"),
     new ResourceList.Item(1, "Putzarbeiten", "#7b83eb"),
     new ResourceList.Item(2, "Trockenbau", "#7b83eb"),
     new ResourceList.Item(3, "Estrich Bad/Küche", "#8bc34a"),
@@ -40,8 +40,11 @@ export default function Tab() {
     
   ]);
   scheduler.config.events = [
-    new Event(3, "2021-01-04", "2021-01-14", "Trocknen"),
-    new Event(4, "2021-01-14", "2021-01-17", "Bodenfliesen"),
+    new Event(0, "2021-01-01", "2021-01-04", "Rückbau"),
+    new Event(3, "2021-01-05", "2021-01-15", "Trocknen"),
+    new Event(4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
+    new Event(8, "2021-01-03", "2021-01-09", "Elektrik"),
+   
   ];
   const [stateResources, setStateResources] = scheduler.config.dialog.resources;
   const [stateEvent, setStateEvent] = scheduler.config.dialog.event;

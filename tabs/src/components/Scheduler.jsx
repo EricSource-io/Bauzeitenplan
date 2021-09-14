@@ -13,6 +13,7 @@ import {
   Segment,
   Dropdown,
   AddIcon,
+  TrashCanIcon,
 } from "@fluentui/react-northstar";
 
 export class ResourceList {
@@ -83,6 +84,7 @@ export class Scheduler {
     dialog: {
       resources: React.useState(false),
       addResource: React.useState(false),
+      deleteResource: React.useState(false),
       event: React.useState(false),
     },
     size: {
@@ -144,138 +146,287 @@ export class Scheduler {
       return itemList;
     },
     Dialog: () => {
-      const [stateResourceList, setStateResourceList] =
-        this.config.resources.list;
-      const [stateDialogResources, setStateDialogResources] =
-        this.config.dialog.resources;
-      const [stateDialogAddResource, setStateDialogAddResource] =
-        this.config.dialog.addResource;
-      const [stateAddResourceColor, setStateAddResourceColor] = React.useState(
-        this.config.colors[0]
-      );
-      const [stateDialogEvent, setStateDialogEvent] = this.config.dialog.event;
+      const Resource = () => {
+        const [stateResourceList, setStateResourceList] =
+          this.config.resources.list;
+        const [stateDialogResources, setStateDialogResources] =
+          this.config.dialog.resources;
+        const [stateDialogAddResource, setStateDialogAddResource] =
+          this.config.dialog.addResource;
+        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
+          this.config.dialog.deleteResource;
+        const [stateAddResourceColor, setStateAddResourceColor] =
+          React.useState(this.config.colors[0]);
+        let changedNames = [];
+        let changedColors = [];
+        let colorChange = (index) => {
+          if (index === this.config.colors.length - 1) {
+            index = 0;
+          } else {
+            index++;
+          }
+          return this.config.colors[index];
+        };
+        let openDeleteDialog = (item) => {
 
-      const [stateEventData, setEventData] = React.useState({
-        name: `Event ${this.config.events.length + 1}`,
-        resource: "",
-        date: {
-          start: new Date(),
-          end: new Date(),
-        },
-      });
+          setStateDialogResources(false);
+          setStateDialogDeleteResource(true);
+        };
 
-      function handleEventNameInput(event) {
-        setEventData({
-          name: event.target.value,
-          resource: stateEventData.resource,
+        let ResourceItems = () => {
+          const [state, setState] = this.config.resources.list;
+          let itemList = state.map((item) => {
+            const [colorState, setColorState] = React.useState(
+              this.config.colors.find((e) => e.hex === item.color)
+            );
+
+            return (
+              <div className="resource_item" key={item.id + "resource"}>
+                <Flex gap="gap.medium">
+                  <FlexItem>
+                    <Button
+                      icon={<TrashCanIcon />}
+                      iconOnly
+                      text
+                      style={{ paddingRight: 15, margin: 0 }}
+                      onClick={() => {
+                        openDeleteDialog(item);
+                      }}
+                    />
+                  </FlexItem>
+                  <FlexItem>
+                    <Input
+                      icon={<EditIcon />}
+                      placeholder={item.name}
+                      clearable
+                      type="text"
+                      fluid
+                      onChange={(e) => {
+                        let value = e.target.value;
+                        if (value !== undefined) {
+                          changedNames[item.id] = {
+                            id: item.id,
+                            value: value,
+                          };
+                        } else {
+                          changedNames.splice(item.id, 1);
+                        }
+                      }}
+                    />
+                  </FlexItem>
+                  <FlexItem>
+                    <Button
+                      circular
+                      icon={
+                        <CallRecordingIcon
+                          style={{
+                            color: colorState.hex,
+                            position: "absolute",
+                            right: 15,
+                          }}
+                        />
+                      }
+                      iconPosition="after"
+                      onClick={(e) => {
+                        let color = colorChange(
+                          this.config.colors.indexOf(colorState)
+                        );
+                        changedColors[item.id] = { id: item.id, color: color };
+                        setColorState(color);
+                      }}
+                      content={colorState.name}
+                      style={{ borderColor: colorState.hex, minWidth: 100 }}
+                    />
+                  </FlexItem>
+                </Flex>
+              </div>
+            );
+          });
+          return itemList;
+        };
+        let saveChangedData = () => {
+          const [state, setState] = this.config.resources.list;
+          changedNames.forEach((i) => {
+            let item = state.find((e) => e.id === i.id);
+            item.name = i.value;
+            this.config.resources.updateItem(item);
+          });
+
+          changedColors.forEach((i) => {
+            let item = state.find((e) => e.id === i.id);
+            item.color = i.color.hex;
+            this.config.resources.updateItem(item);
+          });
+        };
+        let resourceDialogConfirm = () => {
+          saveChangedData();
+          //Close Dialog
+          setStateDialogResources(false); /*SAVE Data*/
+        };
+
+        //Resource add dialog
+        let inputResourceAdd = stateResourceList.length + 1;
+
+        return (
+          <>
+            <Dialog
+              closeOnOutsideClick={false}
+              open={stateDialogResources}
+              id="dialog_resource"
+              content={
+                <>
+                  <h2 className="dialog_title">Gewerke verwalten</h2>
+                  <div className="dialog_content">
+                    <Button
+                      fluid
+                      primary
+                      content="Gewerk hinzufügen"
+                      icon={<AddIcon />}
+                      onClick={() => {
+                        saveChangedData();
+                        setStateDialogResources(false);
+                        setStateDialogAddResource(true);
+                      }}
+                    />
+                    <div id="dialog_resource_list">
+                      <ResourceItems />
+                    </div>
+                  </div>
+                </>
+              }
+              confirmButton="Fertig"
+              onConfirm={resourceDialogConfirm}
+            />
+            <Dialog
+              closeOnOutsideClick={false}
+              open={stateDialogAddResource}
+              id="dialog_resource"
+              content={
+                <>
+                  <h2 className="dialog_title">Gewerke hinzufügen</h2>
+                  <div className="dialog_content">
+                    <Flex gap="gap.medium">
+                      <FlexItem>
+                        <Input
+                          icon={<EditIcon />}
+                          clearable
+                          placeholder={`Gewerk ${stateResourceList.length + 1}`}
+                          onChange={(e) => {
+                            let value = e.target.value;
+                            if (value !== undefined) {
+                              inputResourceAdd = value;
+                            } else {
+                              inputResourceAdd = stateResourceList.length + 1;
+                            }
+                          }}
+                          type="text"
+                          fluid
+                        />
+                      </FlexItem>
+                      <FlexItem>
+                        <Button
+                          circular
+                          icon={
+                            <CallRecordingIcon
+                              style={{
+                                color: stateAddResourceColor.hex,
+                                position: "absolute",
+                                right: 15,
+                              }}
+                            />
+                          }
+                          iconPosition="after"
+                          onClick={(e) => {
+                            let color = colorChange(
+                              this.config.colors.indexOf(stateAddResourceColor)
+                            );
+                            setStateAddResourceColor(color);
+                          }}
+                          content={stateAddResourceColor.name}
+                          style={{
+                            borderColor: stateAddResourceColor.hex,
+                            minWidth: 100,
+                          }}
+                        />
+                      </FlexItem>
+                    </Flex>
+                  </div>
+                </>
+              }
+              cancelButton="Abbrechen"
+              confirmButton="Hinzufügen"
+              onConfirm={() => {
+                this.config.resources.addItem(
+                  new ResourceList.Item(
+                    stateResourceList.length + 1,
+                    inputResourceAdd,
+                    stateAddResourceColor.hex
+                  )
+                );
+                setStateDialogAddResource(false);
+                setStateDialogResources(true);
+              }}
+              onCancel={() => {
+                setStateDialogAddResource(false);
+                setStateDialogResources(true);
+              }}
+            />
+            <Dialog
+              closeOnOutsideClick={false}
+              open={stateDialogDeleteResource}
+              id="dialog_resource"
+              content={
+                <>
+                  <h2 className="dialog_title">Gewerk löschen?</h2>
+                  <div className="dialog_content">
+                   
+                    <span style={{ color: "rgb(73 73 73)", fontWeight: 600 }}>
+                    {`${"Gewerk"} `} 
+                    </span>
+                    wird entgültig aus der Datenbank entfernt, und kann nicht
+                    wieder aufgerufen werden.
+                  </div>
+                </>
+              }
+              cancelButton="Abbrechen"
+              confirmButton="Löschen"
+              onConfirm={() => {
+                setStateDialogResources(true);
+                setStateDialogDeleteResource(false);
+              }}
+              onCancel={() => {
+                setStateDialogResources(true);
+                setStateDialogDeleteResource(false);
+              }}
+            />
+          </>
+        );
+      };
+      const Event = () => {
+        const [stateDialogEvent, setStateDialogEvent] =
+          this.config.dialog.event;
+        const [stateEventData, setEventData] = React.useState({
+          name: `Event ${this.config.events.length + 1}`,
+          resource: "",
           date: {
-            start: stateEventData.date.start,
-            end: stateEventData.date.end,
+            start: new Date(),
+            end: new Date(),
           },
         });
-      }
-
-      let colorChange = (index) => {
-        if (index === this.config.colors.length - 1) {
-          index = 0;
-        } else {
-          index++;
+        function handleEventNameInput(event) {
+          setEventData({
+            name: event.target.value,
+            resource: stateEventData.resource,
+            date: {
+              start: stateEventData.date.start,
+              end: stateEventData.date.end,
+            },
+          });
         }
-        return this.config.colors[index];
-      };
 
-      let ResourceItems = () => {
-        const [state, setState] = this.config.resources.list;
-        let itemList = state.map((item) => {
-          const [colorState, setColorState] = React.useState(
-            this.config.colors.find((e) => e.hex === item.color)
-          );
+        function createEvent() {}
 
-          return (
-            <div className="resource_item" key={item.id + "resource"}>
-              <Flex gap="gap.medium">
-                <FlexItem>
-                  <Input
-                    icon={<EditIcon />}
-                    placeholder={item.name}
-                    clearable
-                    type="text"
-                    fluid
-                    onChange={(e) => {
-                      let value = e.target.value;
-                      if (value !== undefined) {
-                        changedNames[item.id] = {
-                          id: item.id,
-                          value: value,
-                        };
-                      } else {
-                        changedNames.splice(item.id, 1);
-                      }
-                    }}
-                  />
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    circular
-                    icon={
-                      <CallRecordingIcon
-                        style={{
-                          color: colorState.hex,
-                          position: "absolute",
-                          right: 15,
-                        }}
-                      />
-                    }
-                    iconPosition="after"
-                    onClick={(e) => {
-                      let color = colorChange(
-                        this.config.colors.indexOf(colorState)
-                      );
-                      changedColors[item.id] = { id: item.id, color: color };
-                      setColorState(color);
-                    }}
-                    content={colorState.name}
-                    style={{ borderColor: colorState.hex, minWidth: 100 }}
-                  />
-                </FlexItem>
-              </Flex>
-            </div>
-          );
-        });
-        return itemList;
-      };
-
-      function createEvent() {}
-
-      let changedNames = [];
-      let changedColors = [];
-
-      let saveChangedData = () => {
-        const [state, setState] = this.config.resources.list;
-        changedNames.forEach((i) => {
-          let item = state.find((e) => e.id === i.id);
-          item.name = i.value;
-          this.config.resources.updateItem(item);
-        });
-
-        changedColors.forEach((i) => {
-          let item = state.find((e) => e.id === i.id);
-          item.color = i.color.hex;
-          this.config.resources.updateItem(item);
-        });
-      };
-
-      let resourceDialogConfirm = () => {
-        saveChangedData();
-        //Close Dialog
-        setStateDialogResources(false); /*SAVE Data*/
-      };
-
-      //Resource add dialog
-      let inputResourceAdd = stateResourceList.length + 1;
-
-      return (
-        <>
+        return (
           <Dialog
             closeOnOutsideClick={false}
             open={stateDialogEvent}
@@ -323,111 +474,12 @@ export class Scheduler {
             }}
             onCancel={() => setStateDialogEvent(false)}
           />
-
-          <Dialog
-            closeOnOutsideClick={false}
-            open={stateDialogResources}
-            id="dialog_resource"
-            content={
-              <>
-                <h2 className="dialog_title">Gewerke verwalten</h2>
-                <div className="dialog_content">
-                  <Button
-                    fluid
-                    primary
-                    content="Gewerk hinzufügen"
-                    icon={<AddIcon />}
-                    onClick={() => {
-                      saveChangedData();
-                      setStateDialogResources(false);
-                      setStateDialogAddResource(true);
-                    }}
-                  />
-                  <div id="dialog_resource_list">
-
-
-                  <ResourceItems />
-                  </div>
-                </div>
-              </>
-            }
-            confirmButton="Fertig"
-            onConfirm={resourceDialogConfirm}
-          />
-          <Dialog
-            closeOnOutsideClick={false}
-            open={stateDialogAddResource}
-            id="dialog_resource"
-            content={
-              <>
-                <h2 className="dialog_title">Gewerke hinzufügen</h2>
-                <div className="dialog_content">
-                  <Flex gap="gap.medium">
-                    <FlexItem>
-                      <Input
-                        icon={<EditIcon />}
-                        clearable
-                        placeholder={`Gewerk ${stateResourceList.length + 1}`}
-                        onChange={(e) => {
-                          let value = e.target.value;
-                          if (value !== undefined) {
-                            inputResourceAdd = value;
-                          } else {
-                            inputResourceAdd = stateResourceList.length + 1;
-                          }
-                        }}
-                        type="text"
-                        fluid
-                      />
-                    </FlexItem>
-                    <FlexItem>
-                      <Button
-                        circular
-                        icon={
-                          <CallRecordingIcon
-                            style={{
-                              color: stateAddResourceColor.hex,
-                              position: "absolute",
-                              right: 15,
-                            }}
-                          />
-                        }
-                        iconPosition="after"
-                        onClick={(e) => {
-                          let color = colorChange(
-                            this.config.colors.indexOf(stateAddResourceColor)
-                          );
-                          setStateAddResourceColor(color);
-                        }}
-                        content={stateAddResourceColor.name}
-                        style={{
-                          borderColor: stateAddResourceColor.hex,
-                          minWidth: 100,
-                        }}
-                      />
-                    </FlexItem>
-                  </Flex>
-                </div>
-              </>
-            }
-            cancelButton="Abbrechen"
-            confirmButton="Hinzufügen"
-            onConfirm={() => {
-              this.config.resources.addItem(
-                new ResourceList.Item(
-                  stateResourceList.length + 1,
-                  inputResourceAdd,
-                  stateAddResourceColor.hex
-                )
-              );
-              setStateDialogAddResource(false);
-              setStateDialogResources(true);
-            }}
-            onCancel={() => {
-              setStateDialogAddResource(false);
-              setStateDialogResources(true);
-            }}
-          />
+        );
+      };
+      return (
+        <>
+          <Resource />
+          <Event />
         </>
       );
     },
@@ -473,7 +525,7 @@ export class Scheduler {
             style={{
               backgroundColor: this.config.resources.getColor(event.id),
               width:
-                this.getDaysBetween(state.start, state.end) *
+                (this.getDaysBetween(state.start, state.end) + 1) *
                 this.config.size.cell,
               left: getLeftPositioning(),
               top: event.id * this.config.size.cell,
