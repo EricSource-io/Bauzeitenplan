@@ -22,7 +22,7 @@ export class ResourceList {
   }
   getColor(id) {
     const [state, setState] = this.list;
-    let color = state.filter((e) => e.id === id)[0].color;
+    let color = state.find((e) => e.id === id)?.color;
     return color;
   }
   updateItem(item) {
@@ -38,6 +38,13 @@ export class ResourceList {
     const [state, setState] = this.list;
     let list = state;
     list.push(item);
+    setState(list);
+  }
+  deleteItem(item) {
+    const [state, setState] = this.list;
+    let list = state;
+    let index = list.indexOf(list.find((e) => e.id === item.id));
+    list.splice(index, 1);
     setState(list);
   }
 }
@@ -86,6 +93,9 @@ export class Scheduler {
       addResource: React.useState(false),
       deleteResource: React.useState(false),
       event: React.useState(false),
+    },
+    state: {
+      deleteResourceItem: React.useState(undefined),
     },
     size: {
       cell: 40,
@@ -157,6 +167,9 @@ export class Scheduler {
           this.config.dialog.deleteResource;
         const [stateAddResourceColor, setStateAddResourceColor] =
           React.useState(this.config.colors[0]);
+        const [stateDeleteResourceItem, setStateDeleteResourceItem] =
+          this.config.state.deleteResourceItem;
+
         let changedNames = [];
         let changedColors = [];
         let colorChange = (index) => {
@@ -166,11 +179,6 @@ export class Scheduler {
             index++;
           }
           return this.config.colors[index];
-        };
-        let openDeleteDialog = (item) => {
-
-          setStateDialogResources(false);
-          setStateDialogDeleteResource(true);
         };
 
         let ResourceItems = () => {
@@ -190,7 +198,9 @@ export class Scheduler {
                       text
                       style={{ paddingRight: 15, margin: 0 }}
                       onClick={() => {
-                        openDeleteDialog(item);
+                        setStateDeleteResourceItem(item);
+                        setStateDialogResources(false);
+                        setStateDialogDeleteResource(true);
                       }}
                     />
                   </FlexItem>
@@ -262,6 +272,11 @@ export class Scheduler {
           saveChangedData();
           //Close Dialog
           setStateDialogResources(false); /*SAVE Data*/
+        };
+        let deleteResourceItem = () => {
+          this.config.resources.deleteItem(stateDeleteResourceItem);
+          //Deletes related events
+          this.config.events.splice(stateDeleteResourceItem.id, 1);
         };
 
         //Resource add dialog
@@ -379,9 +394,8 @@ export class Scheduler {
                 <>
                   <h2 className="dialog_title">Gewerk löschen?</h2>
                   <div className="dialog_content">
-                   
                     <span style={{ color: "rgb(73 73 73)", fontWeight: 600 }}>
-                    {`${"Gewerk"} `} 
+                      {`${stateDeleteResourceItem?.name} `}
                     </span>
                     wird entgültig aus der Datenbank entfernt, und kann nicht
                     wieder aufgerufen werden.
@@ -391,6 +405,7 @@ export class Scheduler {
               cancelButton="Abbrechen"
               confirmButton="Löschen"
               onConfirm={() => {
+                deleteResourceItem();
                 setStateDialogResources(true);
                 setStateDialogDeleteResource(false);
               }}
