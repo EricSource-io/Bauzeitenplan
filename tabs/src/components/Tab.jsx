@@ -14,7 +14,7 @@ import {
   MenuIcon,
 } from "@fluentui/react-icons-northstar";
 import "./Scheduler.css";
-import { Scheduler, ResourceList, Event } from "./Scheduler.jsx";
+import { Scheduler, ResourceList, EventList } from "./Scheduler.jsx";
 
 export default function Tab() {
   var dialogEvent = {
@@ -35,15 +35,14 @@ export default function Tab() {
     new ResourceList.Item(4, "Sanitär Rückbau", "#7b83eb"),
     new ResourceList.Item(5, "Fliesenleger", "#7b83eb"),
     new ResourceList.Item(6, "Feinreinigung", "#7b83eb"),
-    new ResourceList.Item(7, "Tischler", "#7b83eb"),
     new ResourceList.Item(8, "Elektriker", "#7b83eb"),
   ]);
-  scheduler.config.events = [
-    new Event(0, "2021-01-01", "2021-01-04", "Rückbau"),
-    new Event(3, "2021-01-05", "2021-01-15", "Trocknen"),
-    new Event(4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
-    new Event(8, "2021-01-03", "2021-01-09", "Elektrik"),
-  ];
+  scheduler.config.events = new EventList([
+    new EventList.Item(0, 0, "2021-01-01", "2021-01-04", "Rückbau"),
+    new EventList.Item(1, 3, "2021-01-05", "2021-01-15", "Trocknen"),
+    new EventList.Item(2, 4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
+    new EventList.Item(3, 8,"2021-01-03", "2021-01-09", "Elektrik"),
+  ]);
   const [stateResources, setStateResources] = scheduler.config.dialog.resources;
   const [stateEvent, setStateEvent] = scheduler.config.dialog.event;
 

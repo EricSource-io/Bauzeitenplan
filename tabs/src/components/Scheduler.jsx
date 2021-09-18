@@ -25,6 +25,10 @@ export class ResourceList {
     let color = state.find((e) => e.id === id)?.color;
     return color;
   }
+  getIndex(id) {
+    const [state, setState] = this.list;
+    return state.indexOf(state.find((e) => e.id === id));
+  }
   updateItem(item) {
     //Item id cannot be changed !
     const [state, setState] = this.list;
@@ -57,24 +61,42 @@ ResourceList.Item = class {
   }
 };
 
-export class Event {
-  constructor(id, start, end, text) {
-    this.id = id;
-    this.state = React.useState({ start: start, end: end, text: text });
+export class EventList {
+  constructor(list) {
+    this.list = React.useState(list);
   }
-  setStart(date) {
-    const [state, setState] = this.state;
-    setState({ start: date, end: state.end, text: state.text });
+  updateItem(item) {
+    //Item id cannot be changed !
+    //TODO: Resource id can be changed
+    const [state, setState] = this.list;
+    let list = state;
+    let oldItem = list.find((e) => e.id === item.id);
+    let index = list.indexOf(oldItem);
+    list[index] = item;
+    setState(list);
   }
-  setEnd(date) {
-    const [state, setState] = this.state;
-    setState({ start: state.start, end: date, text: state.text });
+  addItem(item) {
+    const [state, setState] = this.list;
+    let list = state;
+    list.push(item);
+    setState(list);
   }
-  setText(text) {
-    const [state, setState] = this.state;
-    setState({ start: state.start, end: state.end, text: text });
+  deleteItemRow(resourceId) {
+    const [state, setState] = this.list;
+    const filtered = state.filter((e) => e.resourceId !== resourceId)
+    setState(filtered);
   }
 }
+
+EventList.Item = class {
+  constructor(id, resourceId, start, end, text) {
+    this.id = id;
+    this.resourceId = resourceId;
+    this.start = start;
+    this.end = end;
+    this.text = text;
+  }
+};
 
 export class Scheduler {
   config = {
@@ -159,16 +181,17 @@ export class Scheduler {
       const Resource = () => {
         const [stateResourceList, setStateResourceList] =
           this.config.resources.list;
-        const [stateDialogResources, setStateDialogResources] =
-          this.config.dialog.resources;
-        const [stateDialogAddResource, setStateDialogAddResource] =
-          this.config.dialog.addResource;
-        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
-          this.config.dialog.deleteResource;
         const [stateAddResourceColor, setStateAddResourceColor] =
           React.useState(this.config.colors[0]);
         const [stateDeleteResourceItem, setStateDeleteResourceItem] =
           this.config.state.deleteResourceItem;
+        const dialog = this.config.dialog;
+        const [stateDialogResources, setStateDialogResources] =
+          dialog.resources;
+        const [stateDialogAddResource, setStateDialogAddResource] =
+          dialog.addResource;
+        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
+          dialog.deleteResource;
 
         let changedNames = [];
         let changedColors = [];
@@ -275,8 +298,8 @@ export class Scheduler {
         };
         let deleteResourceItem = () => {
           this.config.resources.deleteItem(stateDeleteResourceItem);
-          //Deletes related events
-          this.config.events.splice(stateDeleteResourceItem.id, 1);
+          this.config.events.deleteItemRow(stateDeleteResourceItem.id)
+        
         };
 
         //Resource add dialog
@@ -502,19 +525,19 @@ export class Scheduler {
       const [state, setState] = this.config.resources.list;
       let itemList = [];
       for (
-        let day = 0;
-        day <=
+        let row = 0;
+        row <=
         this.getDaysBetween(this.config.date.start, this.config.date.end);
-        day++
+        row++
       ) {
-        for (let row = 0; row < state.length; row++) {
+        for (let column = 0; column < state.length; column++) {
           itemList.push(
             <div
-              key={`${row.toString()}_${day.toString()}`}
+              key={`${column.toString()}_${row.toString()}`}
               className="scheduler_cell"
               style={{
-                top: row * this.config.size.cell,
-                left: day * this.config.size.cell,
+                top: column * this.config.size.cell,
+                left: row * this.config.size.cell,
                 height: this.config.size.cell,
                 width: this.config.size.cell,
               }}
@@ -525,33 +548,36 @@ export class Scheduler {
       return itemList;
     },
     Events: () => {
-      let itemList = this.config.events.map((event) => {
-        const [state, setState] = event.state;
+      const [state, setState] = this.config.events.list;
+      const itemList = state.map((item, index) => {
+        const resourceIndex = this.config.resources.getIndex(item.resourceId);
         let getLeftPositioning = () => {
           return (
-            this.getDaysBetween(this.config.date.start, state.start) *
+            this.getDaysBetween(this.config.date.start, item.start) *
             this.config.size.cell
           );
         };
+
         return (
           <div
             className="scheduler_default_event"
-            key={event.id + "event"}
+            key={item.id + "event"}
             style={{
-              backgroundColor: this.config.resources.getColor(event.id),
+              backgroundColor: this.config.resources.getColor(item.resourceId),
               width:
-                (this.getDaysBetween(state.start, state.end) + 1) *
+                (this.getDaysBetween(item.start, item.end) + 1) *
                 this.config.size.cell,
               left: getLeftPositioning(),
-              top: event.id * this.config.size.cell,
+              top: resourceIndex * this.config.size.cell,
               height: this.config.size.cell,
               lineHeight: this.config.size.cell + "px",
             }}
           >
-            {state.text}
+            {item.text}
           </div>
         );
       });
+
       return itemList;
     },
     Timeheader_Month: () => {
