@@ -83,7 +83,7 @@ export class EventList {
   }
   deleteItemRow(resourceId) {
     const [state, setState] = this.list;
-    const filtered = state.filter((e) => e.resourceId !== resourceId)
+    const filtered = state.filter((e) => e.resourceId !== resourceId);
     setState(filtered);
   }
 }
@@ -97,6 +97,10 @@ EventList.Item = class {
     this.text = text;
   }
 };
+/*TODO implement this function
+const uid = function(){
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}*/
 
 export class Scheduler {
   config = {
@@ -179,19 +183,14 @@ export class Scheduler {
     },
     Dialog: () => {
       const Resource = () => {
-        const [stateResourceList, setStateResourceList] =
-          this.config.resources.list;
-        const [stateAddResourceColor, setStateAddResourceColor] =
-          React.useState(this.config.colors[0]);
-        const [stateDeleteResourceItem, setStateDeleteResourceItem] =
-          this.config.state.deleteResourceItem;
+        const [stateResourceList, setStateResourceList] = this.config.resources.list;
+        const [stateAddResourceColor, setStateAddResourceColor] = React.useState(this.config.colors[0]);
+        const [stateAddResourceInput, setStateAddResourceInput] = React.useState(`Event ${stateResourceList.length + 1}`);
+        const [stateDeleteResourceItem, setStateDeleteResourceItem] = this.config.state.deleteResourceItem;
         const dialog = this.config.dialog;
-        const [stateDialogResources, setStateDialogResources] =
-          dialog.resources;
-        const [stateDialogAddResource, setStateDialogAddResource] =
-          dialog.addResource;
-        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
-          dialog.deleteResource;
+        const [stateDialogResources, setStateDialogResources] = dialog.resources;
+        const [stateDialogAddResource, setStateDialogAddResource] = dialog.addResource;
+        const [stateDialogDeleteResource, setStateDialogDeleteResource] = dialog.deleteResource;
 
         let changedNames = [];
         let changedColors = [];
@@ -298,12 +297,19 @@ export class Scheduler {
         };
         let deleteResourceItem = () => {
           this.config.resources.deleteItem(stateDeleteResourceItem);
-          this.config.events.deleteItemRow(stateDeleteResourceItem.id)
-        
+          this.config.events.deleteItemRow(stateDeleteResourceItem.id);
         };
-
         //Resource add dialog
-        let inputResourceAdd = stateResourceList.length + 1;
+
+        let createResourceItem = () => {
+          this.config.resources.addItem(
+            new ResourceList.Item(
+              stateResourceList.length + 1,
+              stateAddResourceInput,
+              stateAddResourceColor.hex
+            )
+          );
+        };
 
         return (
           <>
@@ -351,10 +357,13 @@ export class Scheduler {
                           placeholder={`Gewerk ${stateResourceList.length + 1}`}
                           onChange={(e) => {
                             let value = e.target.value;
-                            if (value !== undefined) {
-                              inputResourceAdd = value;
+                            let isEmpty = value.trim().length === 0;
+                            if (!isEmpty) {
+                              setStateAddResourceInput(value);
                             } else {
-                              inputResourceAdd = stateResourceList.length + 1;
+                              setStateAddResourceInput(
+                                `Event ${stateResourceList.length + 1}`
+                              );
                             }
                           }}
                           type="text"
@@ -394,13 +403,7 @@ export class Scheduler {
               cancelButton="Abbrechen"
               confirmButton="Hinzufügen"
               onConfirm={() => {
-                this.config.resources.addItem(
-                  new ResourceList.Item(
-                    stateResourceList.length + 1,
-                    inputResourceAdd,
-                    stateAddResourceColor.hex
-                  )
-                );
+                createResourceItem();
                 setStateDialogAddResource(false);
                 setStateDialogResources(true);
               }}
@@ -443,26 +446,10 @@ export class Scheduler {
       const Event = () => {
         const [stateDialogEvent, setStateDialogEvent] =
           this.config.dialog.event;
-        const [stateEventData, setEventData] = React.useState({
-          name: `Event ${this.config.events.length + 1}`,
-          resource: "",
-          date: {
-            start: new Date(),
-            end: new Date(),
-          },
-        });
-        function handleEventNameInput(event) {
-          setEventData({
-            name: event.target.value,
-            resource: stateEventData.resource,
-            date: {
-              start: stateEventData.date.start,
-              end: stateEventData.date.end,
-            },
-          });
-        }
+        const [stateEventList, setStateEventList] = this.config.events.list;
+  
 
-        function createEvent() {}
+        let createEvent = () => {};
 
         return (
           <Dialog
@@ -477,8 +464,8 @@ export class Scheduler {
                     <Input
                       label="Name:"
                       type="text"
-                      value={stateEventData.name}
-                      onChange={(e) => handleEventNameInput(e)}
+                      placeholder={`Event ${stateEventList.length + 1}`}
+                      onChange={(e) => {}}
                       fluid
                     />
                     <Dropdown
