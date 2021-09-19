@@ -444,13 +444,14 @@ export class Scheduler {
         );
       };
       const Event = () => {
-        const [stateDialogEvent, setStateDialogEvent] =
-          this.config.dialog.event;
+        const [stateDialogEvent, setStateDialogEvent] = this.config.dialog.event;
         const [stateEventList, setStateEventList] = this.config.events.list;
-  
+        const [stateResourceList, setStateResourceList] = this.config.resources.list;
+        const minDate = this.config.date.start.toISOString().substring(0, 10)
+        const maxDate = new Date(this.config.date.end.setUTCHours(24)).toISOString().substring(0, 10);
+        
 
         let createEvent = () => {};
-
         return (
           <Dialog
             closeOnOutsideClick={false}
@@ -470,19 +471,23 @@ export class Scheduler {
                     />
                     <Dropdown
                       placeholder="Wähle ein Gewerk aus"
-                      items={""}
+                      items={stateResourceList.map((e) => e.name)}
                       fluid
                     />
                     <Flex gap="gap.small">
                       <Input
                         type="date"
                         label="Von:"
+                        min={minDate}
+                        max={maxDate}
                         //   value={stateEventData.date.start}
                         fluid
                       />
                       <Input
                         type="date"
                         label="Bis:"
+                        min={minDate}
+                        max={maxDate}
                         // value={stateEventData.date.end}
                         fluid
                       />
