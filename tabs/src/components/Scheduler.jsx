@@ -183,14 +183,23 @@ export class Scheduler {
     },
     Dialog: () => {
       const Resource = () => {
-        const [stateResourceList, setStateResourceList] = this.config.resources.list;
-        const [stateAddResourceColor, setStateAddResourceColor] = React.useState(this.config.colors[0]);
-        const [stateAddResourceInput, setStateAddResourceInput] = React.useState(`Event ${stateResourceList.length + 1}`);
-        const [stateDeleteResourceItem, setStateDeleteResourceItem] = this.config.state.deleteResourceItem;
+        const [stateResourceList, setStateResourceList] =
+          this.config.resources.list;
+        const [stateAddResourceColor, setStateAddResourceColor] =
+          React.useState(this.config.colors[0]);
+        //Necessary because otherwise the state changes with the color state
+        const [stateAddResourceInput, setStateAddResourceInput] =
+          React.useState(`Event ${stateResourceList.length + 1}`);
+        //
+        const [stateDeleteResourceItem, setStateDeleteResourceItem] =
+          this.config.state.deleteResourceItem;
         const dialog = this.config.dialog;
-        const [stateDialogResources, setStateDialogResources] = dialog.resources;
-        const [stateDialogAddResource, setStateDialogAddResource] = dialog.addResource;
-        const [stateDialogDeleteResource, setStateDialogDeleteResource] = dialog.deleteResource;
+        const [stateDialogResources, setStateDialogResources] =
+          dialog.resources;
+        const [stateDialogAddResource, setStateDialogAddResource] =
+          dialog.addResource;
+        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
+          dialog.deleteResource;
 
         let changedNames = [];
         let changedColors = [];
@@ -444,12 +453,22 @@ export class Scheduler {
         );
       };
       const Event = () => {
-        const [stateDialogEvent, setStateDialogEvent] = this.config.dialog.event;
+        const [stateDialogEvent, setStateDialogEvent] =
+          this.config.dialog.event;
         const [stateEventList, setStateEventList] = this.config.events.list;
-        const [stateResourceList, setStateResourceList] = this.config.resources.list;
-        const minDate = this.config.date.start.toISOString().substring(0, 10)
-        const maxDate = new Date(this.config.date.end.setUTCHours(24)).toISOString().substring(0, 10);
-        
+        const [stateResourceList, setStateResourceList] =
+          this.config.resources.list;
+        const minDate = this.config.date.start.toISOString().substring(0, 10);
+        const maxDate = new Date(this.config.date.end.setUTCHours(24))
+          .toISOString()
+          .substring(0, 10);
+
+        let event = {
+          name: `Event ${stateEventList.length + 1}`,
+          resourceId: 0,
+          start: new Date(),
+          end: new Date(),
+        };
 
         let createEvent = () => {};
         return (
@@ -466,13 +485,33 @@ export class Scheduler {
                       label="Name:"
                       type="text"
                       placeholder={`Event ${stateEventList.length + 1}`}
-                      onChange={(e) => {}}
+                      onChange={(evt) => (event.name = evt.target.value)}
                       fluid
                     />
                     <Dropdown
                       placeholder="Wähle ein Gewerk aus"
-                      items={stateResourceList.map((e) => e.name)}
+                      items={stateResourceList.map((item) => {
+                        return { header: item.name, data: item };
+                      })}
                       fluid
+                      getA11ySelectionMessage={{
+                        onAdd: (item) => (event.resourceId = item.data.id),
+                      }}
+                      renderItem={(Item, props) => (
+                        <Item
+                          {...props}
+                          header={
+                            <>
+                              <CallRecordingIcon
+                                style={{ color: props.data.color }}
+                              />
+                              <span style={{ marginLeft: 5 }}>
+                                {props.header}
+                              </span>
+                            </>
+                          }
+                        />
+                      )}
                     />
                     <Flex gap="gap.small">
                       <Input
@@ -480,7 +519,6 @@ export class Scheduler {
                         label="Von:"
                         min={minDate}
                         max={maxDate}
-                        //   value={stateEventData.date.start}
                         fluid
                       />
                       <Input
@@ -488,7 +526,6 @@ export class Scheduler {
                         label="Bis:"
                         min={minDate}
                         max={maxDate}
-                        // value={stateEventData.date.end}
                         fluid
                       />
                     </Flex>
