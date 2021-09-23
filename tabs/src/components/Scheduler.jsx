@@ -464,13 +464,23 @@ export class Scheduler {
           .substring(0, 10);
 
         let event = {
-          name: `Event ${stateEventList.length + 1}`,
           resourceId: 0,
           start: new Date(),
           end: new Date(),
+          text: `Event ${stateEventList.length + 1}`,
         };
 
-        let createEvent = () => {};
+        let createEventItem = () => {
+          this.config.events.addItem(
+            new EventList.Item(
+              stateEventList.length + 1,
+              event.resourceId,
+              event.start,
+              event.end,
+              event.text
+            )
+          );
+        };
         return (
           <Dialog
             closeOnOutsideClick={false}
@@ -482,10 +492,10 @@ export class Scheduler {
                 <div className="dialog_content">
                   <Flex column gap="gap.small">
                     <Input
-                      label="Name:"
+                      label="Text:"
                       type="text"
                       placeholder={`Event ${stateEventList.length + 1}`}
-                      onChange={(evt) => (event.name = evt.target.value)}
+                      onChange={(evt) => (event.text = evt.target.value)}
                       fluid
                     />
                     <Dropdown
@@ -503,9 +513,13 @@ export class Scheduler {
                           header={
                             <>
                               <CallRecordingIcon
-                                style={{ color: props.data.color }}
+                                style={{
+                                  color: props.data.color,
+                                  position: "absolute",
+                                  marginTop: 2,
+                                }}
                               />
-                              <span style={{ marginLeft: 5 }}>
+                              <span style={{ marginLeft: 22 }}>
                                 {props.header}
                               </span>
                             </>
@@ -520,6 +534,7 @@ export class Scheduler {
                         min={minDate}
                         max={maxDate}
                         fluid
+                        onChange={(evt) => (event.start = evt.target.value)}
                       />
                       <Input
                         type="date"
@@ -527,6 +542,7 @@ export class Scheduler {
                         min={minDate}
                         max={maxDate}
                         fluid
+                        onChange={(evt) => (event.end = evt.target.value)}
                       />
                     </Flex>
                   </Flex>
@@ -536,7 +552,7 @@ export class Scheduler {
             cancelButton="Abbrechen"
             confirmButton="Hinzufügen"
             onConfirm={() => {
-              createEvent();
+              createEventItem();
               setStateDialogEvent(false); /*SAVE Data*/
             }}
             onCancel={() => setStateDialogEvent(false)}
