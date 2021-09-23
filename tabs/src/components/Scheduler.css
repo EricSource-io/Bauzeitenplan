@@ -211,7 +211,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    width: 100%;
 }
+
+.scheduler_event_settings {}
 
 .dialog_title {
     position: absolute;

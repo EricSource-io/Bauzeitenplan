@@ -6,6 +6,7 @@ import {
   Dialog,
   Input,
   Button,
+  MenuButton,
   EditIcon,
   Flex,
   FlexItem,
@@ -596,6 +597,7 @@ export class Scheduler {
       const [state, setState] = this.config.events.list;
       const itemList = state.map((item, index) => {
         const resourceIndex = this.config.resources.getIndex(item.resourceId);
+
         let getLeftPositioning = () => {
           return (
             this.getDaysBetween(this.config.date.start, item.start) *
@@ -605,20 +607,35 @@ export class Scheduler {
 
         return (
           <div
-            className="scheduler_default_event"
-            key={item.id + "event"}
             style={{
-              backgroundColor: this.config.resources.getColor(item.resourceId),
+              left: getLeftPositioning(),
+              position: "absolute",
+              top: resourceIndex * this.config.size.cell,
               width:
                 (this.getDaysBetween(item.start, item.end) + 1) *
                 this.config.size.cell,
-              left: getLeftPositioning(),
-              top: resourceIndex * this.config.size.cell,
-              height: this.config.size.cell,
-              lineHeight: this.config.size.cell + "px",
             }}
           >
-            {item.text}
+            <MenuButton
+              className="scheduler_event_settings"
+              trigger={
+                <div
+                  className="scheduler_default_event"
+                  key={item.id + "event"}
+                  style={{
+                    backgroundColor: this.config.resources.getColor(
+                      item.resourceId
+                    ),
+
+                    height: this.config.size.cell,
+                    lineHeight: this.config.size.cell + "px",
+                  }}
+                >
+                  {item.text}
+                </div>
+              }
+              menu={["Löschen", "Bearbeiten"]}
+            />
           </div>
         );
       });
