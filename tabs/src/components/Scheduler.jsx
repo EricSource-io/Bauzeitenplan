@@ -82,6 +82,12 @@ export class EventList {
     list.push(item);
     setState(list);
   }
+  deleteItem(eventId) {
+    const [state, setState] = this.list;
+    const filterd = state.filter((e) => e.id !== eventId);
+    console.log(eventId);
+    setState(filterd);
+  }
   deleteItemRow(resourceId) {
     const [state, setState] = this.list;
     const filtered = state.filter((e) => e.resourceId !== resourceId);
@@ -190,7 +196,7 @@ export class Scheduler {
           React.useState(this.config.colors[0]);
         //Necessary because otherwise the state changes with the color state
         const [stateAddResourceInput, setStateAddResourceInput] =
-          React.useState(`Event ${stateResourceList.length + 1}`);
+          React.useState(`Gewerk ${stateResourceList.length + 1}`);
         //
         const [stateDeleteResourceItem, setStateDeleteResourceItem] =
           this.config.state.deleteResourceItem;
@@ -607,6 +613,7 @@ export class Scheduler {
 
         return (
           <div
+            key={`event_parent_${item.id}`}
             style={{
               left: getLeftPositioning(),
               position: "absolute",
@@ -621,12 +628,10 @@ export class Scheduler {
               trigger={
                 <div
                   className="scheduler_default_event"
-                  key={item.id + "event"}
                   style={{
                     backgroundColor: this.config.resources.getColor(
                       item.resourceId
                     ),
-
                     height: this.config.size.cell,
                     lineHeight: this.config.size.cell + "px",
                   }}
@@ -634,7 +639,22 @@ export class Scheduler {
                   {item.text}
                 </div>
               }
-              menu={["Löschen", "Bearbeiten"]}
+              menu={[
+                <Button
+                  text
+                  key={`event_menuButton_${item.id}`}
+                  content="Bearbeiten"
+                  icon={<EditIcon />}
+                  onClick={() => {}}
+                />,
+                <Button
+                  text
+                  key={`event_menuButton_${item.id}`}
+                  content="Löschen"
+                  icon={<TrashCanIcon />}
+                  onClick={() => this.config.events.deleteItem(item.id)}
+                />,
+              ]}
             />
           </div>
         );
