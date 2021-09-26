@@ -134,7 +134,7 @@ export class Scheduler {
       editEventItem: React.useState(undefined),
     },
     size: {
-      cell: 40,
+      cell: 40, //TODO: Ability to change cell sizes to 25/30/35/40
     },
     resources: [],
     events: [],
@@ -690,19 +690,24 @@ export class Scheduler {
     },
     Cells: () => {
       const [state, setState] = this.config.resources.list;
+      let currentDate = new Date(this.config.date.start);
       let itemList = [];
       for (
-        let row = 0;
+        let row = 0; //day
         row <=
         this.getDaysBetween(this.config.date.start, this.config.date.end);
         row++
       ) {
+        let isWeekend = currentDate.getDay() === 0 ||currentDate.getDay() === 6
+        currentDate.setDate(currentDate.getDate() + 1);
         for (let column = 0; column < state.length; column++) {
+          
           itemList.push(
             <div
               key={`${column.toString()}_${row.toString()}`}
               className="scheduler_cell"
               style={{
+                backgroundColor: isWeekend ? "#faf9f8" : "transparent",
                 top: column * this.config.size.cell,
                 left: row * this.config.size.cell,
                 height: this.config.size.cell,
