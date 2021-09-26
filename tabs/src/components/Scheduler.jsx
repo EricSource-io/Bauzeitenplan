@@ -30,6 +30,7 @@ export class ResourceList {
     const [state, setState] = this.list;
     return state.indexOf(state.find((e) => e.id === id));
   }
+
   updateItem(item) {
     //Item id cannot be changed !
     const [state, setState] = this.list;
@@ -68,12 +69,13 @@ export class EventList {
   }
   updateItem(item) {
     //Item id cannot be changed !
-    //TODO: Resource id can be changed
+
     const [state, setState] = this.list;
     let list = state;
     let oldItem = list.find((e) => e.id === item.id);
     let index = list.indexOf(oldItem);
     list[index] = item;
+    console.log(oldItem, item);
     setState(list);
   }
   addItem(item) {
@@ -85,7 +87,6 @@ export class EventList {
   deleteItem(eventId) {
     const [state, setState] = this.list;
     const filterd = state.filter((e) => e.id !== eventId);
-    console.log(eventId);
     setState(filterd);
   }
   deleteItemRow(resourceId) {
@@ -126,9 +127,11 @@ export class Scheduler {
       addResource: React.useState(false),
       deleteResource: React.useState(false),
       event: React.useState(false),
+      editEvent: React.useState(false),
     },
     state: {
       deleteResourceItem: React.useState(undefined),
+      editEventItem: React.useState(undefined),
     },
     size: {
       cell: 40,
@@ -462,6 +465,10 @@ export class Scheduler {
       const Event = () => {
         const [stateDialogEvent, setStateDialogEvent] =
           this.config.dialog.event;
+        const [stateDialogEditEvent, setStateDialogEditEvent] =
+          this.config.dialog.editEvent;
+        const [stateEditEventItem, setStateEditEventItem] =
+          this.config.state.editEventItem;
         const [stateEventList, setStateEventList] = this.config.events.list;
         const [stateResourceList, setStateResourceList] =
           this.config.resources.list;
@@ -476,6 +483,9 @@ export class Scheduler {
           end: new Date(),
           text: `Event ${stateEventList.length + 1}`,
         };
+        let eventEdit = {
+          ...stateEditEventItem,
+        };
 
         let createEventItem = () => {
           this.config.events.addItem(
@@ -488,82 +498,187 @@ export class Scheduler {
             )
           );
         };
+        let updateEventItem = () => {
+          this.config.events.updateItem(
+            new EventList.Item(
+              stateEditEventItem.id,
+              eventEdit.resourceId,
+              eventEdit.start,
+              eventEdit.end,
+              eventEdit.text
+            )
+          );
+        };
         return (
-          <Dialog
-            closeOnOutsideClick={false}
-            open={stateDialogEvent}
-            id="dialog_event"
-            content={
-              <>
-                <h2 className="dialog_title">Event hinzufügen</h2>
-                <div className="dialog_content">
-                  <Flex column gap="gap.small">
-                    <Input
-                      label="Text:"
-                      type="text"
-                      placeholder={`Event ${stateEventList.length + 1}`}
-                      onChange={(evt) => (event.text = evt.target.value)}
-                      fluid
-                    />
-                    <Dropdown
-                      placeholder="Wähle ein Gewerk aus"
-                      items={stateResourceList.map((item) => {
-                        return { header: item.name, data: item };
-                      })}
-                      fluid
-                      getA11ySelectionMessage={{
-                        onAdd: (item) => (event.resourceId = item.data.id),
-                      }}
-                      renderItem={(Item, props) => (
-                        <Item
-                          {...props}
-                          header={
-                            <>
-                              <CallRecordingIcon
-                                style={{
-                                  color: props.data.color,
-                                  position: "absolute",
-                                  marginTop: 2,
-                                }}
-                              />
-                              <span style={{ marginLeft: 22 }}>
-                                {props.header}
-                              </span>
-                            </>
-                          }
+          <>
+            <Dialog
+              closeOnOutsideClick={false}
+              open={stateDialogEvent}
+              id="dialog_event"
+              content={
+                <>
+                  <h2 className="dialog_title">Event hinzufügen</h2>
+                  <div className="dialog_content">
+                    <Flex column gap="gap.small">
+                      <Input
+                        label="Text:"
+                        type="text"
+                        placeholder={`Event ${stateEventList.length + 1}`}
+                        onChange={(evt) => (event.text = evt.target.value)}
+                        fluid
+                      />
+                      <Dropdown
+                        placeholder="Wähle ein Gewerk aus"
+                        items={stateResourceList.map((item) => {
+                          return { header: item.name, data: item };
+                        })}
+                        fluid
+                        getA11ySelectionMessage={{
+                          onAdd: (item) => (event.resourceId = item.data.id),
+                        }}
+                        renderItem={(Item, props) => (
+                          <Item
+                            {...props}
+                            header={
+                              <>
+                                <CallRecordingIcon
+                                  style={{
+                                    color: props.data.color,
+                                    position: "absolute",
+                                    marginTop: 2,
+                                  }}
+                                />
+                                <span style={{ marginLeft: 22 }}>
+                                  {props.header}
+                                </span>
+                              </>
+                            }
+                          />
+                        )}
+                      />
+                      <Flex gap="gap.small">
+                        <Input
+                          type="date"
+                          label="Von:"
+                          min={minDate}
+                          max={maxDate}
+                          fluid
+                          onChange={(evt) => (event.start = evt.target.value)}
                         />
-                      )}
-                    />
-                    <Flex gap="gap.small">
-                      <Input
-                        type="date"
-                        label="Von:"
-                        min={minDate}
-                        max={maxDate}
-                        fluid
-                        onChange={(evt) => (event.start = evt.target.value)}
-                      />
-                      <Input
-                        type="date"
-                        label="Bis:"
-                        min={minDate}
-                        max={maxDate}
-                        fluid
-                        onChange={(evt) => (event.end = evt.target.value)}
-                      />
+                        <Input
+                          type="date"
+                          label="Bis:"
+                          min={minDate}
+                          max={maxDate}
+                          fluid
+                          onChange={(evt) => (event.end = evt.target.value)}
+                        />
+                      </Flex>
                     </Flex>
-                  </Flex>
-                </div>
-              </>
-            }
-            cancelButton="Abbrechen"
-            confirmButton="Hinzufügen"
-            onConfirm={() => {
-              createEventItem();
-              setStateDialogEvent(false); /*SAVE Data*/
-            }}
-            onCancel={() => setStateDialogEvent(false)}
-          />
+                  </div>
+                </>
+              }
+              cancelButton="Abbrechen"
+              confirmButton="Hinzufügen"
+              onConfirm={() => {
+                createEventItem();
+                setStateDialogEvent(false); /*SAVE Data*/
+              }}
+              onCancel={() => setStateDialogEvent(false)}
+            />
+            <Dialog
+              closeOnOutsideClick={false}
+              open={stateDialogEditEvent}
+              id="dialog_event"
+              content={
+                <>
+                  <h2 className="dialog_title">Event bearbeiten</h2>
+                  <div className="dialog_content">
+                    <Flex column gap="gap.small">
+                      <Input
+                        label="Text:"
+                        type="text"
+                        placeholder={eventEdit?.text}
+                        onChange={(evt) => (event.text = evt.target.value)}
+                        fluid
+                      />
+                      <Dropdown
+                        placeholder={
+                          stateResourceList[
+                            this.config.resources.getIndex(
+                              eventEdit?.resourceId
+                            )
+                          ]?.name
+                        }
+                        items={stateResourceList.map((item) => {
+                          return { header: item.name, data: item };
+                        })}
+                        fluid
+                        getA11ySelectionMessage={{
+                          onAdd: (item) =>
+                            (eventEdit.resourceId = item.data.id),
+                        }}
+                        renderItem={(Item, props) => (
+                          <Item
+                            {...props}
+                            header={
+                              <>
+                                <CallRecordingIcon
+                                  style={{
+                                    color: props.data.color,
+                                    position: "absolute",
+                                    marginTop: 2,
+                                  }}
+                                />
+                                <span style={{ marginLeft: 22 }}>
+                                  {props.header}
+                                </span>
+                              </>
+                            }
+                          />
+                        )}
+                      />
+                      <Flex gap="gap.small">
+                        <Input
+                          type="date"
+                          label="Von:"
+                          value={eventEdit?.start}
+                          min={minDate}
+                          max={maxDate}
+                          fluid
+                          onChange={(evt) => {
+                            let event = eventEdit;
+                            event.start = evt.target.value;
+                            setStateEditEventItem(event);
+                          }}
+                        />
+                        <Input
+                          type="date"
+                          label="Bis:"
+                          value={eventEdit?.end}
+                          min={minDate}
+                          max={maxDate}
+                          fluid
+                          onChange={(evt) => {
+                            let event = eventEdit;
+                            event.end = evt.target.value;
+                            setStateEditEventItem(event);
+                          }}
+                        />
+                      </Flex>
+                    </Flex>
+                  </div>
+                </>
+              }
+              cancelButton="Abbrechen"
+              confirmButton="Fertig"
+              onConfirm={() => {
+                updateEventItem();
+                setStateDialogEditEvent(false); /*SAVE Data*/
+              }}
+              onCancel={() => setStateDialogEditEvent(false)}
+            />
+          </>
         );
       };
       return (
@@ -601,6 +716,10 @@ export class Scheduler {
     },
     Events: () => {
       const [state, setState] = this.config.events.list;
+      const [stateDialogEditEvent, setStateDialogEditEvent] =
+        this.config.dialog.editEvent;
+      const [stateEditEventItem, setStateEditEventItem] =
+        this.config.state.editEventItem;
       const itemList = state.map((item, index) => {
         const resourceIndex = this.config.resources.getIndex(item.resourceId);
 
@@ -642,14 +761,17 @@ export class Scheduler {
               menu={[
                 <Button
                   text
-                  key={`event_menuButton_${item.id}`}
+                  key={`event_menuButton_edit_${item.id}`}
                   content="Bearbeiten"
                   icon={<EditIcon />}
-                  onClick={() => {}}
+                  onClick={() => {
+                    setStateEditEventItem(item);
+                    setStateDialogEditEvent(true);
+                  }}
                 />,
                 <Button
                   text
-                  key={`event_menuButton_${item.id}`}
+                  key={`event_menuButton_delete_${item.id}`}
                   content="Löschen"
                   icon={<TrashCanIcon />}
                   onClick={() => this.config.events.deleteItem(item.id)}
