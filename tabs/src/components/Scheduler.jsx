@@ -486,8 +486,15 @@ export class Scheduler {
         let eventEdit = {
           ...stateEditEventItem,
         };
-
+        let validation = () => {
+          if (
+            event.start < this.config.date.start ||
+            event.end > this.config.date.end
+          )
+            return false;
+        };
         let createEventItem = () => {
+          if (!validation()) return;
           this.config.events.addItem(
             new EventList.Item(
               stateEventList.length + 1,
@@ -698,7 +705,7 @@ export class Scheduler {
         this.getDaysBetween(this.config.date.start, this.config.date.end);
         row++
       ) {
-        let isWeekend =
+        const isWeekend =
           currentDate.getDay() === 0 || currentDate.getDay() === 6;
         currentDate.setDate(currentDate.getDate() + 1);
         for (let column = 0; column < state.length; column++) {
@@ -721,13 +728,11 @@ export class Scheduler {
             const dayIndex = currentDate.getDay();
             if (isWeekend) {
               add(_class.weekend);
-              add(
-                dayIndex === 0
-                  ? `${_class.border.lt} ${_class.border.default}`
-                  : _class.border.rt
-              );
+              add(dayIndex === 0 ? _class.border.default : _class.border.rt);
             } else if (dayIndex !== 6) {
               add(_class.border.default);
+            } else {
+              add(_class.border.rt);
             }
             return string;
           };
@@ -986,13 +991,15 @@ export class Scheduler {
         this.config.date.start,
         this.config.date.end
       );
-      for (let day = 0; day <= daysBetween; day++) {
+      for (let column = 0; column <= daysBetween; column++) {
+        const isWeekend =
+          currentDate.getDay() === 0 || currentDate.getDay() === 6;
         itemList.push(
           <div
-            key={day}
+            key={column}
             className="scheduler_timeheader_day"
             style={{
-              left: day * this.config.size.cell,
+              left: column * this.config.size.cell,
               userSelect: "none",
               width: this.config.size.cell,
             }}
