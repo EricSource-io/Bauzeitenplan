@@ -698,16 +698,45 @@ export class Scheduler {
         this.getDaysBetween(this.config.date.start, this.config.date.end);
         row++
       ) {
-        let isWeekend = currentDate.getDay() === 0 ||currentDate.getDay() === 6
+        let isWeekend =
+          currentDate.getDay() === 0 || currentDate.getDay() === 6;
         currentDate.setDate(currentDate.getDate() + 1);
         for (let column = 0; column < state.length; column++) {
-          
+          let getClassNames = () => {
+            const _class = {
+              default: "scheduler_cell",
+              weekend: "scheduler_cell_weekend",
+              border: {
+                //tick
+                rt: "scheduler_cell_border_rt",
+                lt: "scheduler_cell_border_lt",
+                //default
+                default: "scheduler_cell_border_default",
+              },
+            };
+            let string = _class.default;
+            function add(className) {
+              string += ` ${className}`;
+            }
+            const dayIndex = currentDate.getDay();
+            if (isWeekend) {
+              add(_class.weekend);
+              add(
+                dayIndex === 0
+                  ? `${_class.border.lt} ${_class.border.default}`
+                  : _class.border.rt
+              );
+            } else if (dayIndex !== 6) {
+              add(_class.border.default);
+            }
+            return string;
+          };
+
           itemList.push(
             <div
               key={`${column.toString()}_${row.toString()}`}
-              className="scheduler_cell"
+              className={getClassNames()}
               style={{
-                backgroundColor: isWeekend ? "#faf9f8" : "transparent",
                 top: column * this.config.size.cell,
                 left: row * this.config.size.cell,
                 height: this.config.size.cell,
@@ -878,13 +907,13 @@ export class Scheduler {
       let offsetX = 0;
 
       let getWeekNumber = (date) => {
-        var month = date.getMonth() + 1; // use 1-12
-        var year = date.getFullYear();
-        var day = date.getDate();
-        var a = Math.floor((14 - month) / 12);
-        var y = year + 4800 - a;
-        var m = month + 12 * a - 3;
-        var jd =
+        let month = date.getMonth() + 1; // use 1-12
+        let year = date.getFullYear();
+        let day = date.getDate();
+        let a = Math.floor((14 - month) / 12);
+        let y = year + 4800 - a;
+        let m = month + 12 * a - 3;
+        let jd =
           day +
           Math.floor((153 * m + 2) / 5) +
           365 * y +
@@ -894,10 +923,10 @@ export class Scheduler {
           32045; // (gregorian calendar)
 
         //calc weeknumber
-        var d4 = (((jd + 31741 - (jd % 7)) % 146097) % 36524) % 1461;
-        var L = Math.floor(d4 / 1460);
-        var d1 = ((d4 - L) % 365) + L;
-        var NumberOfWeek = Math.floor(d1 / 7) + 1;
+        let d4 = (((jd + 31741 - (jd % 7)) % 146097) % 36524) % 1461;
+        let L = Math.floor(d4 / 1460);
+        let d1 = ((d4 - L) % 365) + L;
+        let NumberOfWeek = Math.floor(d1 / 7) + 1;
         return NumberOfWeek;
       };
       let getLeftPositioning = () => {
@@ -1024,24 +1053,6 @@ export class Scheduler {
           >
             <this.HTML.Cells />
             <this.HTML.Events />
-          </div>
-          <div style={{ position: "absolute", top: "-10px", left: "200px" }}>
-            <p>
-              START:{" "}
-              {this.config.date.start.getDate() +
-                ". " +
-                (this.config.date.start.getMonth() + 1) +
-                " " +
-                this.config.date.start.getFullYear()}
-            </p>
-            <p>
-              ENDE:{" "}
-              {this.config.date.end.getDate() +
-                ". " +
-                (this.config.date.end.getMonth() + 1) +
-                " " +
-                this.config.date.end.getFullYear()}
-            </p>
           </div>
         </>
       );

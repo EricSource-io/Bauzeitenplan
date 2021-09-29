@@ -110,6 +110,21 @@
     background-color: rgb(255, 255, 255);
     position: absolute;
     border-bottom: 1px solid rgb(236, 236, 236);
+}
+
+.scheduler_cell_weekend {
+    background-color: rgb(250, 249, 249);
+}
+
+.scheduler_cell_border_rt {
+    border-right: 1px solid rgb(209, 208, 208);
+}
+
+.scheduler_cell_border_lt {
+    border-left: 1px solid rgb(209, 208, 208);
+}
+
+.scheduler_cell_border_default {
     border-right: 1px solid rgb(236, 236, 236);
 }
 
