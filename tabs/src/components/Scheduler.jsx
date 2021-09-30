@@ -132,6 +132,7 @@ export class Scheduler {
     state: {
       deleteResourceItem: React.useState(undefined),
       editEventItem: React.useState(undefined),
+      scrollY: 0,
     },
     size: {
       cell: 40, //TODO: Ability to change cell sizes to 25/30/35/40
@@ -139,18 +140,20 @@ export class Scheduler {
     resources: [],
     events: [],
   };
+
   ref = {
-    scheduler_default_scrollable: React.createRef(),
     scheduler_default_timeheader_scroll: React.createRef(),
   };
 
-  syncScroll() {
-    var timeheader = document.getElementById(
+  syncScroll = () => {
+    const timeheader = document.getElementById(
       "scheduler_default_timeheader_scroll"
     );
-    var defaultScroll = document.getElementById("scheduler_default_scrollable");
+    const defaultScroll = document.getElementById(
+      "scheduler_default_scrollable"
+    );
     timeheader.scrollLeft = defaultScroll.scrollLeft;
-  }
+  };
   getDaysBetween(startDate, endDate) {
     var daysBetween = Math.floor(
       (Date.parse(endDate) - Date.parse(startDate)) / (24 * 60 * 60 * 1000)
@@ -492,6 +495,7 @@ export class Scheduler {
             event.end > this.config.date.end
           )
             return false;
+          return true;
         };
         let createEventItem = () => {
           if (!validation()) return;
@@ -708,7 +712,7 @@ export class Scheduler {
         const isWeekend =
           currentDate.getDay() === 0 || currentDate.getDay() === 6;
         currentDate.setDate(currentDate.getDate() + 1);
-        for (let column = 0; column < state.length; column++) {
+        for (let column = 0; column < 8; column++) {
           let getClassNames = () => {
             const _class = {
               default: "scheduler_cell",
@@ -1052,7 +1056,6 @@ export class Scheduler {
           </div>
           <div
             id="scheduler_default_scrollable"
-            ref={this.ref.scheduler_default_scrollable}
             onScroll={this.syncScroll}
             style={{
               height: state.length * this.config.size.cell + 15,

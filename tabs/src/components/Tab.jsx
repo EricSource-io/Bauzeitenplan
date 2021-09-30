@@ -41,13 +41,13 @@ export default function Tab() {
     new EventList.Item(0, 0, "2021-01-01", "2021-01-04", "Rückbau"),
     new EventList.Item(1, 3, "2021-01-05", "2021-01-15", "Trocknen"),
     new EventList.Item(2, 4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
-    new EventList.Item(3, 8,"2021-01-03", "2021-01-09", "Elektrik"),
+    new EventList.Item(3, 8, "2021-01-03", "2021-01-09", "Elektrik"),
   ]);
   const [stateResources, setStateResources] = scheduler.config.dialog.resources;
   const [stateEvent, setStateEvent] = scheduler.config.dialog.event;
 
   return (
-    <div>
+    <>
       <div id="buttonHeader">
         <MenuButton
           trigger={<Button icon={<MenuIcon />} />}
@@ -79,6 +79,6 @@ export default function Tab() {
         ></Button>
       </div>
       <scheduler.HTML.Scheduler />
-    </div>
+    </>
   );
 }

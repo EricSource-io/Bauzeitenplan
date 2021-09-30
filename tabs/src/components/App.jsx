@@ -17,7 +17,7 @@ export default function App() {
   const { theme, loading } = useTeamsFx();
   return (
     <Provider theme={theme || teamsTheme} styles={{ backgroundColor: "transparent" }} >
-      
+         
       <Router>
         <Route exact path="/">
           <Redirect to="/tab" />
