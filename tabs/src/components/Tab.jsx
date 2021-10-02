@@ -43,8 +43,7 @@ export default function Tab() {
     new EventList.Item(2, 4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
     new EventList.Item(3, 8, "2021-01-03", "2021-01-09", "Elektrik"),
   ]);
-  const [stateResources, setStateResources] = scheduler.config.dialog.resources;
-  const [stateEvent, setStateEvent] = scheduler.config.dialog.event;
+ const [state, setState] = scheduler.state;
 
   return (
     <>
@@ -67,7 +66,7 @@ export default function Tab() {
           primary
           content="Gewerke verwalten"
           className="ctrButton"
-          onClick={() => setStateResources(true)}
+          onClick={() => setState(scheduler.getStateDialogObject(state, {resources: true}))}
         ></Button>
         <Button
           icon={<AddIcon />}
@@ -75,7 +74,7 @@ export default function Tab() {
           content="Event"
           className="ctrButton"
           style={{ marginRight: "10px" }}
-          onClick={() => setStateEvent(true)}
+          onClick={() => setState(scheduler.getStateDialogObject(state, {event: true}))}
         ></Button>
       </div>
       <scheduler.HTML.Scheduler />

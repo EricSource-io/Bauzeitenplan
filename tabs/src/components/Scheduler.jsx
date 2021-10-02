@@ -69,7 +69,6 @@ export class EventList {
   }
   updateItem(item) {
     //Item id cannot be changed !
-
     const [state, setState] = this.list;
     let list = state;
     let oldItem = list.find((e) => e.id === item.id);
@@ -122,18 +121,6 @@ export class Scheduler {
       { name: "Rot", hex: "#f44336" },
       { name: "Gelb", hex: "#ff9800" },
     ],
-    dialog: {
-      resources: React.useState(false),
-      addResource: React.useState(false),
-      deleteResource: React.useState(false),
-      event: React.useState(false),
-      editEvent: React.useState(false),
-    },
-    state: {
-      deleteResourceItem: React.useState(undefined),
-      editEventItem: React.useState(undefined),
-      scrollY: 0,
-    },
     size: {
       cell: 40, //TODO: Ability to change cell sizes to 25/30/35/40
     },
@@ -144,6 +131,18 @@ export class Scheduler {
   ref = {
     scheduler_default_timeheader_scroll: React.createRef(),
   };
+
+  state = React.useState({
+    dialog: {
+      resources: false,
+      addResource: false,
+      deleteResource: false,
+      event: false,
+      editEvent: false,
+    },
+    deleteResourceItem: undefined,
+    editEventItem: undefined,
+  });
 
   syncScroll = () => {
     const timeheader = document.getElementById(
@@ -166,6 +165,9 @@ export class Scheduler {
       anyDateInMonth.getMonth() + 1,
       0
     ).getDate();
+  }
+  getStateDialogObject(state, data) {
+    return { ...state, dialog: { ...state.dialog, ...data } };
   }
   HTML = {
     ResourceList: () => {
@@ -195,6 +197,7 @@ export class Scheduler {
       return itemList;
     },
     Dialog: () => {
+      const [state, setState] = this.state;
       const Resource = () => {
         const [stateResourceList, setStateResourceList] =
           this.config.resources.list;
@@ -204,15 +207,6 @@ export class Scheduler {
         const [stateAddResourceInput, setStateAddResourceInput] =
           React.useState(`Gewerk ${stateResourceList.length + 1}`);
         //
-        const [stateDeleteResourceItem, setStateDeleteResourceItem] =
-          this.config.state.deleteResourceItem;
-        const dialog = this.config.dialog;
-        const [stateDialogResources, setStateDialogResources] =
-          dialog.resources;
-        const [stateDialogAddResource, setStateDialogAddResource] =
-          dialog.addResource;
-        const [stateDialogDeleteResource, setStateDialogDeleteResource] =
-          dialog.deleteResource;
 
         let changedNames = [];
         let changedColors = [];
@@ -226,8 +220,9 @@ export class Scheduler {
         };
 
         let ResourceItems = () => {
-          const [state, setState] = this.config.resources.list;
-          let itemList = state.map((item) => {
+          const [stateResourceList, setStateResourceList] =
+            this.config.resources.list;
+          let itemList = stateResourceList.map((item) => {
             const [colorState, setColorState] = React.useState(
               this.config.colors.find((e) => e.hex === item.color)
             );
@@ -242,9 +237,13 @@ export class Scheduler {
                       text
                       style={{ paddingRight: 15, margin: 0 }}
                       onClick={() => {
-                        setStateDeleteResourceItem(item);
-                        setStateDialogResources(false);
-                        setStateDialogDeleteResource(true);
+                        setState({
+                          ...this.getStateDialogObject(state, {
+                            deleteResource: true,
+                            resources: false,
+                          }),
+                          deleteResourceItem: item,
+                        });
                       }}
                     />
                   </FlexItem>
@@ -315,11 +314,12 @@ export class Scheduler {
         let resourceDialogConfirm = () => {
           saveChangedData();
           //Close Dialog
-          setStateDialogResources(false); /*SAVE Data*/
+          setState(this.getStateDialogObject(state, { resources: false }));
+          /*SAVE Data*/
         };
         let deleteResourceItem = () => {
-          this.config.resources.deleteItem(stateDeleteResourceItem);
-          this.config.events.deleteItemRow(stateDeleteResourceItem.id);
+          this.config.resources.deleteItem(state.deleteResourceItem);
+          this.config.events.deleteItemRow(state.deleteResourceItem.id);
         };
         //Resource add dialog
 
@@ -337,7 +337,7 @@ export class Scheduler {
           <>
             <Dialog
               closeOnOutsideClick={false}
-              open={stateDialogResources}
+              open={state.dialog.resources}
               id="dialog_resource"
               content={
                 <>
@@ -350,8 +350,13 @@ export class Scheduler {
                       icon={<AddIcon />}
                       onClick={() => {
                         saveChangedData();
-                        setStateDialogResources(false);
-                        setStateDialogAddResource(true);
+
+                        setState(
+                          this.getStateDialogObject(state, {
+                            resources: false,
+                            addResource: true,
+                          })
+                        );
                       }}
                     />
                     <div id="dialog_resource_list">
@@ -365,7 +370,7 @@ export class Scheduler {
             />
             <Dialog
               closeOnOutsideClick={false}
-              open={stateDialogAddResource}
+              open={state.dialog.addResource}
               id="dialog_resource"
               content={
                 <>
@@ -426,24 +431,32 @@ export class Scheduler {
               confirmButton="Hinzufügen"
               onConfirm={() => {
                 createResourceItem();
-                setStateDialogAddResource(false);
-                setStateDialogResources(true);
+                setState(
+                  this.getStateDialogObject(state, {
+                    resources: true,
+                    addResource: false,
+                  })
+                );
               }}
               onCancel={() => {
-                setStateDialogAddResource(false);
-                setStateDialogResources(true);
+                setState(
+                  this.getStateDialogObject(state, {
+                    resources: true,
+                    addResource: false,
+                  })
+                );
               }}
             />
             <Dialog
               closeOnOutsideClick={false}
-              open={stateDialogDeleteResource}
+              open={state.dialog.deleteResource}
               id="dialog_resource"
               content={
                 <>
                   <h2 className="dialog_title">Gewerk löschen?</h2>
                   <div className="dialog_content">
                     <span style={{ color: "rgb(73 73 73)", fontWeight: 600 }}>
-                      {`${stateDeleteResourceItem?.name} `}
+                      {`${state.deleteResourceItem?.name} `}
                     </span>
                     wird entgültig aus der Datenbank entfernt, und kann nicht
                     wieder aufgerufen werden.
@@ -454,27 +467,36 @@ export class Scheduler {
               confirmButton="Löschen"
               onConfirm={() => {
                 deleteResourceItem();
-                setStateDialogResources(true);
-                setStateDialogDeleteResource(false);
+
+                setState(
+                  this.getStateDialogObject(state, {
+                    resources: true,
+                    deleteResource: false,
+                  })
+                );
               }}
               onCancel={() => {
-                setStateDialogResources(true);
-                setStateDialogDeleteResource(false);
+                setState(
+                  this.getStateDialogObject(state, {
+                    resources: true,
+                    deleteResource: false,
+                  })
+                );
               }}
             />
           </>
         );
       };
       const Event = () => {
-        const [stateDialogEvent, setStateDialogEvent] =
-          this.config.dialog.event;
-        const [stateDialogEditEvent, setStateDialogEditEvent] =
-          this.config.dialog.editEvent;
-        const [stateEditEventItem, setStateEditEventItem] =
-          this.config.state.editEventItem;
         const [stateEventList, setStateEventList] = this.config.events.list;
         const [stateResourceList, setStateResourceList] =
           this.config.resources.list;
+        const [stateEventDialogValidation, setStateDialogValidation] =
+          React.useState({
+            resourceId: false,
+            start: false,
+            end: false,
+          });
         const minDate = this.config.date.start.toISOString().substring(0, 10);
         const maxDate = new Date(this.config.date.end.setUTCHours(24))
           .toISOString()
@@ -482,23 +504,32 @@ export class Scheduler {
 
         let event = {
           resourceId: 0,
-          start: new Date(),
-          end: new Date(),
+          start: undefined,
+          end: undefined,
           text: `Event ${stateEventList.length + 1}`,
         };
+
         let eventEdit = {
-          ...stateEditEventItem,
+          ...state.editEventItem,
         };
+
         let validation = () => {
-          if (
-            event.start < this.config.date.start ||
-            event.end > this.config.date.end
-          )
-            return false;
-          return true;
+          const start = new Date(event.start);
+          const end = new Date(event.end);
+          let valid = {
+            resourceId: false,
+            start: start < this.config.date.start && start < end,
+            end: end > this.config.date.end && end > start,
+          };
+
+          setStateDialogValidation(valid);
+
+          return valid;
         };
+
         let createEventItem = () => {
-          if (!validation()) return;
+          const valid = validation();
+          if (!valid.resourceId || !valid.start || !valid.end) return false;
           this.config.events.addItem(
             new EventList.Item(
               stateEventList.length + 1,
@@ -508,11 +539,12 @@ export class Scheduler {
               event.text
             )
           );
+          return true;
         };
         let updateEventItem = () => {
           this.config.events.updateItem(
             new EventList.Item(
-              stateEditEventItem.id,
+              state.editEventItem.id,
               eventEdit.resourceId,
               eventEdit.start,
               eventEdit.end,
@@ -524,7 +556,7 @@ export class Scheduler {
           <>
             <Dialog
               closeOnOutsideClick={false}
-              open={stateDialogEvent}
+              open={state.dialog.event}
               id="dialog_event"
               content={
                 <>
@@ -571,10 +603,14 @@ export class Scheduler {
                         <Input
                           type="date"
                           label="Von:"
+                          error={stateEventDialogValidation.start}
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => (event.start = evt.target.value)}
+                          onChange={(evt) => {
+                            event.start = evt.target.value;
+                            validation();
+                          }}
                         />
                         <Input
                           type="date"
@@ -582,7 +618,10 @@ export class Scheduler {
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => (event.end = evt.target.value)}
+                          onChange={(evt) => {
+                            event.end = evt.target.value;
+                            validation();
+                          }}
                         />
                       </Flex>
                     </Flex>
@@ -592,14 +631,18 @@ export class Scheduler {
               cancelButton="Abbrechen"
               confirmButton="Hinzufügen"
               onConfirm={() => {
-                createEventItem();
-                setStateDialogEvent(false); /*SAVE Data*/
+                const isCreated = createEventItem();
+                if (!isCreated) return;
+                /*SAVE Data*/
+                setState(this.getStateDialogObject(state, { event: true }));
               }}
-              onCancel={() => setStateDialogEvent(false)}
+              onCancel={() =>
+                setState(this.getStateDialogObject(state, { event: false }))
+              }
             />
             <Dialog
               closeOnOutsideClick={false}
-              open={stateDialogEditEvent}
+              open={state.dialog.editEvent}
               id="dialog_event"
               content={
                 <>
@@ -660,7 +703,7 @@ export class Scheduler {
                           onChange={(evt) => {
                             let event = eventEdit;
                             event.start = evt.target.value;
-                            setStateEditEventItem(event);
+                            setState({ ...state, editEventItem: event });
                           }}
                         />
                         <Input
@@ -673,7 +716,7 @@ export class Scheduler {
                           onChange={(evt) => {
                             let event = eventEdit;
                             event.end = evt.target.value;
-                            setStateEditEventItem(event);
+                            setState({ ...state, editEventItem: event });
                           }}
                         />
                       </Flex>
@@ -685,9 +728,14 @@ export class Scheduler {
               confirmButton="Fertig"
               onConfirm={() => {
                 updateEventItem();
-                setStateDialogEditEvent(false); /*SAVE Data*/
+                /*SAVE Data*/
+                setState(
+                  this.getStateDialogObject(state, { editEvent: false })
+                );
               }}
-              onCancel={() => setStateDialogEditEvent(false)}
+              onCancel={() =>
+                setState(this.getStateDialogObject(state, { editEvent: false }))
+              }
             />
           </>
         );
@@ -712,7 +760,7 @@ export class Scheduler {
         const isWeekend =
           currentDate.getDay() === 0 || currentDate.getDay() === 6;
         currentDate.setDate(currentDate.getDate() + 1);
-        for (let column = 0; column < 8; column++) {
+        for (let column = 0; column < state.length; column++) {
           let getClassNames = () => {
             const _class = {
               default: "scheduler_cell",
@@ -758,12 +806,9 @@ export class Scheduler {
       return itemList;
     },
     Events: () => {
-      const [state, setState] = this.config.events.list;
-      const [stateDialogEditEvent, setStateDialogEditEvent] =
-        this.config.dialog.editEvent;
-      const [stateEditEventItem, setStateEditEventItem] =
-        this.config.state.editEventItem;
-      const itemList = state.map((item, index) => {
+      const [state, setState] = this.state;
+      const [stateEventList, setStateEventList] = this.config.events.list;
+      const itemList = stateEventList.map((item, index) => {
         const resourceIndex = this.config.resources.getIndex(item.resourceId);
 
         let getLeftPositioning = () => {
@@ -808,8 +853,10 @@ export class Scheduler {
                   content="Bearbeiten"
                   icon={<EditIcon />}
                   onClick={() => {
-                    setStateEditEventItem(item);
-                    setStateDialogEditEvent(true);
+                    setState({
+                      ...this.getStateDialogObject(state, { editEvent: true }),
+                      editEventItem: item,
+                    });
                   }}
                 />,
                 <Button

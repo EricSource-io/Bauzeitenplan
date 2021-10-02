@@ -43,6 +43,7 @@
 .scheduler_resource,
 .scheduler_timeheadergroup {
     background-color: #fff;
+    color: black;
     transition: background-color .1s linear;
 }
 
@@ -69,6 +70,7 @@
 }
 
 .scheduler_resource_inner {
+    color: black;
     padding: 2px 8px;
     position: absolute;
     left: 0;
@@ -184,6 +186,8 @@
     border-right: 1px solid rgb(236, 236, 236);
     text-align: center;
     height: 40px;
+    background-color: #fff;
+    color: black;
 }
 
 .scheduler_timeheader_month {
