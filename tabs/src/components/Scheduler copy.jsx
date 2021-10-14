@@ -143,7 +143,6 @@ export class Scheduler {
     deleteResourceItem: undefined,
     editEventItem: undefined,
     eventItem: undefined,
-    title: "test",
     eventValidation: {
       resourceId: false,
       start: false,
@@ -528,6 +527,9 @@ export class Scheduler {
           const valid = validation();
           console.log(valid)
           if(!valid.start || !valid.end || !valid.resourceId) return false;
+          //console.log(valid);
+          //  if (!valid.resourceId || !valid.start || !valid.end) return false;
+       
           this.config.events.addItem(
             new EventList.Item(
               stateEventList.length + 1,
@@ -550,14 +552,7 @@ export class Scheduler {
             )
           );
         };
-        function a (e) {
-          setState({...state, title: e.target.value })
-        }
-        //TODO: 
-        //https://medium.com/capital-one-tech/how-to-work-with-forms-inputs-and-events-in-react-c337171b923b
-        //Use bind to pass arguments and update the input field without risking losing any data in the dialog box
-
-                return (
+        return (
           <>
             <Dialog
               closeOnOutsideClick={false}
@@ -572,8 +567,7 @@ export class Scheduler {
                         label="Text:"
                         type="text"
                         placeholder={`Event ${stateEventList.length + 1}`}
-                        value={this.state.title}
-                        onChange={() => (a.bind(this))}
+                        onChange={(evt) => (event.text = evt.target.value)}
                         fluid
                       />
                       <Dropdown

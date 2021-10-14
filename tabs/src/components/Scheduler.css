@@ -1,258 +1,256 @@
-#scheduler_main {
-    user-select: none;
-    line-height: 1.2;
-    position: relative;
-    border: 1px solid #999;
-    border-bottom: none;
-    font-family: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-    font-size: 14px;
-}
-
-#scheduler_sidebar {
-    position: absolute;
-    left: 0px;
-    width: 128px;
-    z-index: 1;
-}
-
-#scheduler_divider_vertical,
-#scheduler_divider_horizontal {
-    background-color: #ccc;
-    line-height: 1.2px;
-}
-
-#scheduler_divider_vertical {
-    position: absolute;
-    left: 127px;
-    width: 1px;
-    height: 388px;
-    z-index: 2;
-}
-
-#scheduler_divider_horizontal {
-    position: absolute;
-    top: 90px;
-    width: 100%;
-    height: 0px;
-    box-sizing: content-box;
-    border-bottom: 1px solid transparent;
-    z-index: 2;
-}
-
-#scheduler_corner,
-.scheduler_resource,
-.scheduler_timeheadergroup {
-    background-color: #fff;
-    color: black;
-    transition: background-color .1s linear;
-}
-
-#scheduler_corner {
-    width: 128px;
-    height: 90px;
-    overflow: hidden;
-    position: relative;
-}
-
-#scheduler_corner_inner {
-    text-align: center;
-    line-height: 60px;
-}
-
-#scheduler_resource_table {
-    position: relative;
-}
-
-.scheduler_resource {
-    width: 128px;
-    overflow: hidden;
-    position: relative;
-}
-
-.scheduler_resource_inner {
-    color: black;
-    padding: 2px 8px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-}
-
-#scheduler_default_scrollable::-webkit-scrollbar {
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-}
-
-#scheduler_default_rowEnd {
-    position: absolute;
-    height: 15px;
-    width: 100%;
-    color: rgb(51, 51, 51);
-    border-bottom: 1px solid #ccc;
-    background-color: rgb(255, 255, 255);
-}
-
-.scheduler_resourcedivider {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    height: 0px;
-    box-sizing: content-box;
-    border-bottom: 1px solid transparent;
-    background-color: #ccc;
-}
-
-.scheduler_cell {
-    background-color: rgb(255, 255, 255);
-    position: absolute;
-    border-bottom: 1px solid rgb(236, 236, 236);
-}
-
-.scheduler_cell_weekend {
-    background-color: rgb(250, 249, 249);
-}
-
-.scheduler_cell_border_rt {
-    border-right: 1px solid rgb(209, 208, 208);
-}
-
-.scheduler_cell_border_lt {
-    border-left: 1px solid rgb(209, 208, 208);
-}
-
-.scheduler_cell_border_default {
-    border-right: 1px solid rgb(236, 236, 236);
-}
-
-.scheduler_timeheadergroup {
-    position: absolute;
-    top: 0px;
-    width: 1080px;
-    height: 30px;
-    user-select: none;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.scheduler_timeheadergroup_inner {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    border-right: 1px solid #ddd;
-    padding: 0;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-}
-
-.scheduler_timeheader_float {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-}
-
-.scheduler_timeheader_float_inner {
-    padding: 3px;
-}
-
-#scheduler_default_timeheader_scroll {
-    overflow: hidden;
-    display: block;
-    position: absolute;
-    top: 61px;
-    left: 129px;
-    width: calc(100% - 128px);
-    height: 90px;
-}
-
-.scheduler_timeheader_day {
-    position: absolute;
-    line-height: 40px;
-    bottom: 0;
-    border-right: 1px solid rgb(236, 236, 236);
-    text-align: center;
-    height: 40px;
-    background-color: #fff;
-    color: black;
-}
-
-.scheduler_timeheader_month {
-    background-color: #7B83EB;
-    color: #ffff;
-    position: absolute;
-    height: 25px;
-    line-height: 25px;
-    top: 0;
-    border-right: 1px solid #ffff;
-    text-align: center;
-    font-size: 15px;
-}
-
-.scheduler_timeheader_week {
-    background-color: #ffff;
-    position: absolute;
-    height: 25px;
-    line-height: 25px;
-    top: 25px;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-}
-
-#scheduler_default_scrollable {
-    overflow-x: auto;
-    overflow-y: hidden;
-    position: absolute;
-    width: calc(100% - 128px);
-    top: 151px;
-    left: 129px;
-}
-
-.scheduler_default_event {
-    position: absolute;
-    color: #ffff;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 100%;
-}
-
-.dialog_title {
-    position: absolute;
-    top: 0;
-}
-
-.dialog_content {
-    margin-top: 35px;
-}
-
-.resource_item {
-    margin-top: 10px;
-}
-
-#dialog_resource_list {
-    max-height: 400px;
-    margin-top: 8px;
-    padding-bottom: 10px;
-    overflow-y: scroll;
-}
-
-#dialog_resource,
-#dialog_event {
-    max-width: 500px;
-}
+    #scheduler_main {
+        user-select: none;
+        line-height: 1.2;
+        position: relative;
+        border: 1px solid #999;
+        border-bottom: none;
+        font-family: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+        font-size: 14px;
+    }
+    
+    #scheduler_sidebar {
+        position: absolute;
+        left: 0px;
+        width: 128px;
+        z-index: 1;
+    }
+    
+    #scheduler_divider_vertical,
+    #scheduler_divider_horizontal {
+        background-color: #ccc;
+        line-height: 1.2px;
+    }
+    
+    #scheduler_divider_vertical {
+        position: absolute;
+        left: 127px;
+        width: 1px;
+        height: 388px;
+        z-index: 2;
+    }
+    
+    #scheduler_divider_horizontal {
+        position: absolute;
+        top: 90px;
+        width: 100%;
+        height: 0px;
+        box-sizing: content-box;
+        border-bottom: 1px solid transparent;
+        z-index: 2;
+    }
+    
+    #scheduler_corner,
+    .scheduler_resource,
+    .scheduler_timeheadergroup {
+        background-color: #fff;
+        color: black;
+        transition: background-color .1s linear;
+    }
+    
+    #scheduler_corner {
+        width: 128px;
+        height: 90px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    #scheduler_corner_inner {
+        text-align: center;
+        line-height: 60px;
+    }
+    
+    #scheduler_resource_table {
+        position: relative;
+    }
+    
+    .scheduler_resource {
+        width: 128px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .scheduler_resource_inner {
+        color: black;
+        padding: 2px 8px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    #scheduler_default_scrollable::-webkit-scrollbar {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+    }
+    
+    #scheduler_default_rowEnd {
+        position: absolute;
+        height: 15px;
+        width: 100%;
+        color: rgb(51, 51, 51);
+        border-bottom: 1px solid #ccc;
+        background-color: rgb(255, 255, 255);
+    }
+    
+    .scheduler_resourcedivider {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        height: 0px;
+        box-sizing: content-box;
+        border-bottom: 1px solid transparent;
+        background-color: #ccc;
+    }
+    
+    .scheduler_cell {
+        background-color: rgb(255, 255, 255);
+        position: absolute;
+        border-bottom: 1px solid rgb(236, 236, 236);
+    }
+    
+    .scheduler_cell_weekend {
+        background-color: rgb(250, 249, 249);
+    }
+    
+    .scheduler_cell_border_rt {
+        border-right: 1px solid rgb(209, 208, 208);
+    }
+    
+    .scheduler_cell_border_lt {
+        border-left: 1px solid rgb(209, 208, 208);
+    }
+    
+    .scheduler_cell_border_default {
+        border-right: 1px solid rgb(236, 236, 236);
+    }
+    
+    .scheduler_timeheadergroup {
+        position: absolute;
+        top: 0px;
+        width: 1080px;
+        height: 30px;
+        user-select: none;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    
+    .scheduler_timeheadergroup_inner {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-right: 1px solid #ddd;
+        padding: 0;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+    }
+    
+    .scheduler_timeheader_float {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+    }
+    
+    .scheduler_timeheader_float_inner {
+        padding: 3px;
+    }
+    
+    #scheduler_default_timeheader_scroll {
+        overflow: hidden;
+        display: block;
+        position: absolute;
+        top: 61px;
+        left: 129px;
+        width: calc(100% - 128px);
+        height: 90px;
+    }
+    
+    .scheduler_timeheader_day {
+        position: absolute;
+        line-height: 40px;
+        bottom: 0;
+        border-right: 1px solid rgb(236, 236, 236);
+        text-align: center;
+        height: 40px;
+        background-color: #fff;
+        color: black;
+    }
+    
+    .scheduler_timeheader_month {
+        background-color: #7B83EB;
+        color: #ffff;
+        position: absolute;
+        height: 25px;
+        line-height: 25px;
+        top: 0;
+        border-right: 1px solid #ffff;
+        text-align: center;
+        font-size: 15px;
+    }
+    
+    .scheduler_timeheader_week {
+        background-color: #ffff;
+        position: absolute;
+        height: 25px;
+        line-height: 25px;
+        top: 25px;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+    }
+    
+    #scheduler_default_scrollable {
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: absolute;
+        width: calc(100% - 128px);
+        top: 151px;
+        left: 129px;
+    }
+    
+    .scheduler_default_event {
+        position: absolute;
+        color: #ffff;
+        text-align: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+    }
+    
+    .dialog_title {
+        position: absolute;
+        top: 0;
+    }
+    
+    .dialog_content {
+        margin-top: 35px;
+    }
+    
+    .resource_item {
+        margin-top: 10px;
+    }
+    
+    #dialog_resource_list {
+        max-height: 400px;
+        margin-top: 8px;
+        padding-bottom: 10px;
+        overflow-y: scroll;
+    }
+    
+    #dialog_resource,
+    #dialog_event {
+        max-width: 500px;
+    }
