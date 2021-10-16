@@ -144,6 +144,8 @@ export class Scheduler {
     editEventItem: undefined,
     eventItem: undefined,
     title: "test",
+    test: false,
+    eventForm: undefined,
     eventValidation: {
       resourceId: false,
       start: false,
@@ -496,9 +498,12 @@ export class Scheduler {
       };
       const Event = () => {
         const [stateEventList, setStateEventList] = this.config.events.list;
-        const [stateResourceList, setStateResourceList] = this.config.resources.list;
+        const [stateResourceList, setStateResourceList] =
+          this.config.resources.list;
         const minDate = this.config.date.start.toISOString().substring(0, 10);
-        const maxDate = new Date(this.config.date.end.setUTCHours(24)).toISOString().substring(0, 10);
+        const maxDate = new Date(this.config.date.end.setUTCHours(24))
+          .toISOString()
+          .substring(0, 10);
 
         let event = {
           resourceId: undefined,
@@ -524,22 +529,9 @@ export class Scheduler {
           return val;
         };
 
-        let createEventItem = () => {
-          const valid = validation();
-          console.log(valid)
-          if(!valid.start || !valid.end || !valid.resourceId) return false;
-          this.config.events.addItem(
-            new EventList.Item(
-              stateEventList.length + 1,
-              event.resourceId,
-              event.start,
-              event.end,
-              event.text
-            )
-          );
-          return true;
-        };
         let updateEventItem = () => {
+          const valid = validation();
+          if (!valid.start || !valid.end || !valid.resourceId) return false;
           this.config.events.updateItem(
             new EventList.Item(
               state.editEventItem.id,
@@ -550,14 +542,37 @@ export class Scheduler {
             )
           );
         };
-        function a (e) {
-          setState({...state, title: e.target.value })
-        }
-        //TODO: 
-        //https://medium.com/capital-one-tech/how-to-work-with-forms-inputs-and-events-in-react-c337171b923b
-        //Use bind to pass arguments and update the input field without risking losing any data in the dialog box
 
-                return (
+        let createEventItem = () => {
+          console.log(event.start);
+          setState({
+            ...state,
+            eventForm: {
+              ...state.eventForm,
+              ...{ start: event.start, end: event.end },
+            },
+          });
+          const valid = validation();
+          //set error
+          //setState({ ...state, test: !valid.resourceId });
+
+          if (!valid.start || !valid.end || !valid.resourceId) return false;
+          this.config.events.addItem(
+            new EventList.Item(
+              stateEventList.length + 1,
+              state.eventForm.resourceId,
+              state.eventForm.start,
+              state.eventForm.end,
+              state.eventForm.text
+            )
+          );
+          return true;
+        };
+        //TODO:
+        //State erst bei Submit updaten, weil erst da validiert wird und die erros gesetzt werden!
+
+      
+        return (
           <>
             <Dialog
               closeOnOutsideClick={false}
@@ -572,18 +587,41 @@ export class Scheduler {
                         label="Text:"
                         type="text"
                         placeholder={`Event ${stateEventList.length + 1}`}
-                        value={this.state.title}
-                        onChange={() => (a.bind(this))}
+                        value={state.eventForm?.text}
+                        onChange={(e) =>
+                          setState({
+                            ...state,
+                            eventForm: {
+                              ...state.eventForm,
+                              text: e.target.value,
+                            },
+                          })
+                        }
                         fluid
                       />
                       <Dropdown
+                        error={state.test}
                         placeholder="Wähle ein Gewerk aus"
                         items={stateResourceList.map((item) => {
                           return { header: item.name, data: item };
                         })}
                         fluid
+                        value={
+                          stateResourceList[
+                            this.config.resources.getIndex(
+                              state.eventForm?.resourceId
+                            )
+                          ]?.name
+                        }
                         getA11ySelectionMessage={{
-                          onAdd: (item) => (event.resourceId = item.data.id),
+                          onAdd: (item) =>
+                            setState({
+                              ...state,
+                              eventForm: {
+                                ...state.eventForm,
+                                resourceId: item.data.id,
+                              },
+                            }),
                         }}
                         renderItem={(Item, props) => (
                           <Item
@@ -609,14 +647,12 @@ export class Scheduler {
                         <Input
                           type="date"
                           label="Von:"
-                        //  error={state.eventValidation.start}
+                          //  error={state.eventValidation.start}
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => {
-                            event.start = evt.target.value;
-                           // validation();
-                          }}
+                          value={state.eventForm?.start}
+                          onChange={(e) => (event.start = e.target.value)}
                         />
                         <Input
                           type="date"
@@ -624,10 +660,8 @@ export class Scheduler {
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => {
-                            event.end = evt.target.value;
-                          //  validation();
-                          }}
+                          value={state.eventForm?.end}
+                          onChange={(e) => (event.end = e.target.value)}
                         />
                       </Flex>
                     </Flex>
