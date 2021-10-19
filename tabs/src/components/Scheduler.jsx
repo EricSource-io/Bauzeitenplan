@@ -143,7 +143,6 @@ export class Scheduler {
     deleteResourceItem: undefined,
     editEventItem: undefined,
     eventItem: undefined,
-    test: false,
     eventForm: undefined,
     eventValidation: {
       resourceId: false,
@@ -538,36 +537,39 @@ export class Scheduler {
 
         let createEventItem = () => {
           const valid = validation();
-
-          setState({
-            ...state,
-            eventForm: stateEvent,
-            test: !valid.resourceId,
-          });
-          if (!Object.keys(valid).every((t) => valid[t])) return false;
-          this.config.events.addItem(
-            new EventList.Item(
-              stateEventList.length + 1,
-              stateEvent.resourceId,
-              stateEvent.start,
-              stateEvent.end,
-              stateEvent?.text || `Event ${stateEventList.length + 1}`
-            )
-          );
-          return true;
-        };
-        
-        let resetDataStates = () => {
-          setStateEvent(null);
-          setState({
-            ...state,
-            ...{
-              eventForm: null,
+          const allValid = Object.keys(valid).every((t) => valid[t]);
+          if (!allValid) {
+            setState({
+              ...state,
+              eventForm: stateEvent,
               eventValidation: {
-                resourceId: false,
-                start: false,
-                end: false,
+                resourceId: !valid.resourceId,
+                start: !valid.start,
+                end: !valid.end,
               },
+            });
+          } else {
+            this.config.events.addItem(
+              new EventList.Item(
+                stateEventList.length + 1,
+                stateEvent.resourceId,
+                stateEvent.start,
+                stateEvent.end,
+                stateEvent?.text || `Event ${stateEventList.length + 1}`
+              )
+            );
+          }
+          return allValid;
+        };
+
+        let closeDialog = () => {
+          setState({
+            ...this.getStateDialogObject(state, { event: false }),
+            eventForm: undefined,
+            eventValidation: {
+              resourceId: false,
+              start: false,
+              end: false,
             },
           });
         };
@@ -594,7 +596,7 @@ export class Scheduler {
                         fluid
                       />
                       <Dropdown
-                        error={state.test}
+                        error={state.eventValidation.resourceId}
                         placeholder="Wähle ein Gewerk aus"
                         items={stateResourceList.map((item) => {
                           return { header: item.name, data: item };
@@ -636,6 +638,7 @@ export class Scheduler {
                       />
                       <Flex gap="gap.small">
                         <Input
+                          error={state.eventValidation.start}
                           type="date"
                           label="Von:"
                           //  error={state.eventValidation.start}
@@ -651,6 +654,7 @@ export class Scheduler {
                           }
                         />
                         <Input
+                          error={state.eventValidation.end}
                           type="date"
                           label="Bis:"
                           min={minDate}
@@ -674,13 +678,11 @@ export class Scheduler {
               onConfirm={() => {
                 const isCreated = createEventItem();
                 if (!isCreated) return;
-                resetDataStates();
                 /*SAVE Data*/
-                setState(this.getStateDialogObject(state, { event: false }));
+                closeDialog();
               }}
               onCancel={() => {
-                resetDataStates();
-                setState(this.getStateDialogObject(state, { event: false }));
+                closeDialog();
               }}
             />
             <Dialog
