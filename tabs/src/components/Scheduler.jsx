@@ -143,7 +143,6 @@ export class Scheduler {
     deleteResourceItem: undefined,
     editEventItem: undefined,
     eventItem: undefined,
-    title: "test",
     test: false,
     eventForm: undefined,
     eventValidation: {
@@ -505,12 +504,7 @@ export class Scheduler {
           .toISOString()
           .substring(0, 10);
 
-        let event = {
-          resourceId: undefined,
-          start: undefined,
-          end: undefined,
-          text: `Event ${stateEventList.length + 1}`,
-        };
+        const [stateEvent, setStateEvent] = React.useState(state.eventForm);
 
         //Same item like event! But only for the "Edit Dialog"
         let eventEdit = {
@@ -518,17 +512,16 @@ export class Scheduler {
         };
 
         let validation = () => {
-          const start = new Date(event.start);
-          const end = new Date(event.end);
+          const start = new Date(stateEvent?.start);
+          const end = new Date(stateEvent?.end);
 
-          let val = {
-            resourceId: event.resourceId !== undefined,
-            start: start > this.config.date.start && start < end,
-            end: end < this.config.date.end && end > start,
+          let valid = {
+            resourceId: stateEvent?.resourceId !== undefined,
+            start: start > this.config.date.start,
+            end: end < this.config.date.end && end >= start, //Checks whether end is not less than start
           };
-          return val;
+          return valid;
         };
-
         let updateEventItem = () => {
           const valid = validation();
           if (!valid.start || !valid.end || !valid.resourceId) return false;
@@ -544,34 +537,41 @@ export class Scheduler {
         };
 
         let createEventItem = () => {
-          console.log(event.start);
+          const valid = validation();
+
           setState({
             ...state,
-            eventForm: {
-              ...state.eventForm,
-              ...{ start: event.start, end: event.end },
-            },
+            eventForm: stateEvent,
+            test: !valid.resourceId,
           });
-          const valid = validation();
-          //set error
-          //setState({ ...state, test: !valid.resourceId });
-
-          if (!valid.start || !valid.end || !valid.resourceId) return false;
+          if (!Object.keys(valid).every((t) => valid[t])) return false;
           this.config.events.addItem(
             new EventList.Item(
               stateEventList.length + 1,
-              state.eventForm.resourceId,
-              state.eventForm.start,
-              state.eventForm.end,
-              state.eventForm.text
+              stateEvent.resourceId,
+              stateEvent.start,
+              stateEvent.end,
+              stateEvent?.text || `Event ${stateEventList.length + 1}`
             )
           );
           return true;
         };
-        //TODO:
-        //State erst bei Submit updaten, weil erst da validiert wird und die erros gesetzt werden!
+        
+        let resetDataStates = () => {
+          setStateEvent(null);
+          setState({
+            ...state,
+            ...{
+              eventForm: null,
+              eventValidation: {
+                resourceId: false,
+                start: false,
+                end: false,
+              },
+            },
+          });
+        };
 
-      
         return (
           <>
             <Dialog
@@ -587,15 +587,9 @@ export class Scheduler {
                         label="Text:"
                         type="text"
                         placeholder={`Event ${stateEventList.length + 1}`}
-                        value={state.eventForm?.text}
+                        value={stateEvent?.text}
                         onChange={(e) =>
-                          setState({
-                            ...state,
-                            eventForm: {
-                              ...state.eventForm,
-                              text: e.target.value,
-                            },
-                          })
+                          setStateEvent({ ...stateEvent, text: e.target.value })
                         }
                         fluid
                       />
@@ -615,12 +609,9 @@ export class Scheduler {
                         }
                         getA11ySelectionMessage={{
                           onAdd: (item) =>
-                            setState({
-                              ...state,
-                              eventForm: {
-                                ...state.eventForm,
-                                resourceId: item.data.id,
-                              },
+                            setStateEvent({
+                              ...stateEvent,
+                              resourceId: item.data.id,
                             }),
                         }}
                         renderItem={(Item, props) => (
@@ -651,8 +642,13 @@ export class Scheduler {
                           min={minDate}
                           max={maxDate}
                           fluid
-                          value={state.eventForm?.start}
-                          onChange={(e) => (event.start = e.target.value)}
+                          value={stateEvent?.start}
+                          onChange={(e) =>
+                            setStateEvent({
+                              ...stateEvent,
+                              start: e.target.value,
+                            })
+                          }
                         />
                         <Input
                           type="date"
@@ -660,8 +656,13 @@ export class Scheduler {
                           min={minDate}
                           max={maxDate}
                           fluid
-                          value={state.eventForm?.end}
-                          onChange={(e) => (event.end = e.target.value)}
+                          value={stateEvent?.end}
+                          onChange={(e) =>
+                            setStateEvent({
+                              ...stateEvent,
+                              end: e.target.value,
+                            })
+                          }
                         />
                       </Flex>
                     </Flex>
@@ -673,12 +674,14 @@ export class Scheduler {
               onConfirm={() => {
                 const isCreated = createEventItem();
                 if (!isCreated) return;
+                resetDataStates();
                 /*SAVE Data*/
                 setState(this.getStateDialogObject(state, { event: false }));
               }}
-              onCancel={() =>
-                setState(this.getStateDialogObject(state, { event: false }))
-              }
+              onCancel={() => {
+                resetDataStates();
+                setState(this.getStateDialogObject(state, { event: false }));
+              }}
             />
             <Dialog
               closeOnOutsideClick={false}
