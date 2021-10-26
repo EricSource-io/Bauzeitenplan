@@ -496,12 +496,9 @@ export class Scheduler {
       };
       const Event = () => {
         const [stateEventList, setStateEventList] = this.config.events.list;
-        const [stateResourceList, setStateResourceList] =
-          this.config.resources.list;
+        const [stateResourceList, setStateResourceList] =this.config.resources.list;
         const minDate = this.config.date.start.toISOString().substring(0, 10);
-        const maxDate = new Date(this.config.date.end.setUTCHours(24))
-          .toISOString()
-          .substring(0, 10);
+        const maxDate = new Date(this.config.date.end.setUTCHours(24)).toISOString().substring(0, 10);
 
         const [stateEvent, setStateEvent] = React.useState(state.eventForm);
 
@@ -523,18 +520,30 @@ export class Scheduler {
         };
         let updateEventItem = () => {
           const valid = validation();
-          if (!valid.start || !valid.end || !valid.resourceId) return false;
-          this.config.events.updateItem(
-            new EventList.Item(
-              state.editEventItem.id,
-              eventEdit.resourceId,
-              eventEdit.start,
-              eventEdit.end,
-              eventEdit.text
-            )
-          );
+          const allValid = Object.keys(valid).every((t) => valid[t]);
+          if (!allValid) {
+            setState({
+              ...state,
+              eventForm: stateEvent,
+              eventValidation: {
+                resourceId: !valid.resourceId,
+                start: !valid.start,
+                end: !valid.end,
+              },
+            });
+          } else {
+            this.config.events.updateItem(
+              new EventList.Item(
+                stateEvent.id,
+                stateEvent.resourceId,
+                stateEvent.start,
+                stateEvent.end,
+                stateEvent.text || `Event ${stateEventList.length + 1}`
+              )
+            );
+          }
+          return allValid;
         };
-
         let createEventItem = () => {
           const valid = validation();
           const allValid = Object.keys(valid).every((t) => valid[t]);
@@ -555,7 +564,7 @@ export class Scheduler {
                 stateEvent.resourceId,
                 stateEvent.start,
                 stateEvent.end,
-                stateEvent?.text || `Event ${stateEventList.length + 1}`
+                stateEvent.text || `Event ${stateEventList.length + 1}`
               )
             );
           }
@@ -573,6 +582,17 @@ export class Scheduler {
             },
           });
         };
+        let closeEditDialog = () => {
+          setState({
+            ...this.getStateDialogObject(state, { editEvent: false }),
+            eventForm: undefined,
+            eventValidation: {
+              resourceId: false,
+              start: false,
+              end: false,
+            },
+          });
+        }
 
         return (
           <>
@@ -641,7 +661,6 @@ export class Scheduler {
                           error={state.eventValidation.start}
                           type="date"
                           label="Von:"
-                          //  error={state.eventValidation.start}
                           min={minDate}
                           max={maxDate}
                           fluid
@@ -697,15 +716,18 @@ export class Scheduler {
                       <Input
                         label="Text:"
                         type="text"
-                        placeholder={eventEdit?.text}
-                        onChange={(evt) => (eventEdit.text = evt.target.value)}
+                        value={stateEvent?.text}
+                        onChange={(e) =>
+                          setStateEvent({ ...stateEvent, text: e.target.value })
+                        }
                         fluid
                       />
                       <Dropdown
+                        error={state.eventValidation.resourceId}
                         placeholder={
                           stateResourceList[
                             this.config.resources.getIndex(
-                              eventEdit?.resourceId
+                              state.eventForm?.resourceId
                             )
                           ]?.name
                         }
@@ -715,7 +737,10 @@ export class Scheduler {
                         fluid
                         getA11ySelectionMessage={{
                           onAdd: (item) =>
-                            (eventEdit.resourceId = item.data.id),
+                          setStateEvent({
+                            ...stateEvent,
+                            resourceId: item.data.id,
+                          }),
                         }}
                         renderItem={(Item, props) => (
                           <Item
@@ -739,30 +764,34 @@ export class Scheduler {
                       />
                       <Flex gap="gap.small">
                         <Input
+                          error={state.eventValidation.start}
                           type="date"
                           label="Von:"
-                          value={eventEdit?.start}
+                          value={stateEvent?.start}
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => {
-                            let event = eventEdit;
-                            event.start = evt.target.value;
-                            setState({ ...state, editEventItem: event });
-                          }}
+                          onChange={(e) =>
+                            setStateEvent({
+                              ...stateEvent,
+                              start: e.target.value,
+                            })
+                          }
                         />
                         <Input
+                          error={state.eventValidation.end}
                           type="date"
                           label="Bis:"
-                          value={eventEdit?.end}
+                          value={stateEvent?.end}
                           min={minDate}
                           max={maxDate}
                           fluid
-                          onChange={(evt) => {
-                            let event = eventEdit;
-                            event.end = evt.target.value;
-                            setState({ ...state, editEventItem: event });
-                          }}
+                          onChange={(e) =>
+                            setStateEvent({
+                              ...stateEvent,
+                              end: e.target.value,
+                            })
+                          }
                         />
                       </Flex>
                     </Flex>
@@ -772,14 +801,12 @@ export class Scheduler {
               cancelButton="Abbrechen"
               confirmButton="Fertig"
               onConfirm={() => {
-                updateEventItem();
-                /*SAVE Data*/
-                setState(
-                  this.getStateDialogObject(state, { editEvent: false })
-                );
+                const isUpdated = updateEventItem();
+                if (!isUpdated) return;
+                closeEditDialog();
               }}
               onCancel={() =>
-                setState(this.getStateDialogObject(state, { editEvent: false }))
+                closeEditDialog()
               }
             />
           </>
@@ -900,7 +927,7 @@ export class Scheduler {
                   onClick={() => {
                     setState({
                       ...this.getStateDialogObject(state, { editEvent: true }),
-                      editEventItem: item,
+                      eventForm: item
                     });
                   }}
                 />,
