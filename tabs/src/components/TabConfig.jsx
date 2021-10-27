@@ -1,7 +1,12 @@
 import React from "react";
 import "./App.css";
 import * as microsoftTeams from "@microsoft/teams-js";
-
+import {
+  Input,
+  Button,
+  Flex,
+  FlexItem,
+} from "@fluentui/react-northstar";
 /**
  * The 'Config' component is used to display your group tabs
  * user configuration options.  Here you will allow the user to
@@ -39,10 +44,53 @@ class TabConfig extends React.Component {
 
     return (
       <div>
-        <h1>Tab Configuration</h1>
+        <h1>Bauzeitenplan</h1>
+
+        <div style={{ width: 200 }}>
+          <Flex column gap="gap.small">
+
+
+            <Flex gap="gap.small">
+              <Input
+                type="date"
+                label="Von:"
+                fluid
+              />
+              <Input
+                type="date"
+                label="Bis:"
+                fluid
+              />
+            </Flex>
+          </Flex>
+        </div>
         <div>
-          This is where you will add your tab configuration options the user can choose when the tab
-          is added to your team/group chat.
+          <h2>Gewerke</h2>
+          <Flex gap="gap.medium">
+            <FlexItem>
+              <Input
+
+                clearable
+
+
+                type="text"
+                fluid
+              />
+            </FlexItem>
+            <FlexItem>
+              <Button
+                circular
+
+                iconPosition="after"
+
+                style={{
+                  //   borderColor: stateAddResourceColor.hex,
+                  minWidth: 100,
+                }}
+              />
+            </FlexItem>
+          </Flex>
+          
         </div>
       </div>
     );
