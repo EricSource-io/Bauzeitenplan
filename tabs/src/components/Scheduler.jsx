@@ -17,9 +17,15 @@ import {
     TrashCanIcon,
 } from "@fluentui/react-northstar";
 
+
+
 export class ResourceList {
     constructor(list) {
         this.list = React.useState(list);
+    }
+    update(newList){
+        const [state, setState] = this.list;
+        setState(newList);
     }
     getColor(id) {
         const [state, setState] = this.list;
@@ -44,6 +50,7 @@ export class ResourceList {
         const [state, setState] = this.list;
         let list = state;
         list.push(item);
+      console.log("EY", item)
         setState(list);
     }
     deleteItem(item) {
@@ -51,6 +58,7 @@ export class ResourceList {
         let list = state;
         let index = list.indexOf(list.find((e) => e.id === item.id));
         list.splice(index, 1);
+       
         setState(list);
     }
 }
@@ -62,10 +70,15 @@ ResourceList.Item = class {
         this.color = color;
     }
 };
+//ResourceList.Item = class extends Firemain.Resource;
 
 export class EventList {
     constructor(list) {
         this.list = React.useState(list);
+    }
+    update(newList){
+        const [state, setState] = this.list;
+        setState(newList);
     }
     updateItem(item) {
         //Item id cannot be changed !
@@ -109,7 +122,9 @@ const uid = function(){
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }*/
 
+
 export class Scheduler {
+    
     config = {
         date: {
             start: new Date(),
@@ -124,10 +139,9 @@ export class Scheduler {
         size: {
             cell: 40, //TODO: Ability to change cell sizes to 25/30/35/40
         },
-        resources: [],
-        events: [],
+        resources: new ResourceList(),
+        events: new EventList(),
     };
-
     ref = {
         scheduler_default_timeheader_scroll: React.createRef(),
     };

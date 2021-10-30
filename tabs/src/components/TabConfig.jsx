@@ -34,12 +34,7 @@ class TabConfig extends React.Component {
       saveEvent.notifySuccess();
     });
 
-    /**
-     * After verifying that the settings for your tab are correctly
-     * filled in by the user you need to set the state of the dialog
-     * to be valid.  This will enable the save button in the configuration
-     * dialog.
-     */
+    //Set valid when all information is valid
     microsoftTeams.settings.setValidityState(true);
 
     return (
@@ -64,34 +59,7 @@ class TabConfig extends React.Component {
             </Flex>
           </Flex>
         </div>
-        <div>
-          <h2>Gewerke</h2>
-          <Flex gap="gap.medium">
-            <FlexItem>
-              <Input
 
-                clearable
-
-
-                type="text"
-                fluid
-              />
-            </FlexItem>
-            <FlexItem>
-              <Button
-                circular
-
-                iconPosition="after"
-
-                style={{
-                  //   borderColor: stateAddResourceColor.hex,
-                  minWidth: 100,
-                }}
-              />
-            </FlexItem>
-          </Flex>
-          
-        </div>
       </div>
     );
   }

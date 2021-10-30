@@ -9,6 +9,7 @@
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "daypilot-pro-react": "0.0.0",
+    "firebase": "^9.2.0",
     "msteams-react-base-component": "^3.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

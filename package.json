@@ -8,6 +8,8 @@
     },
     "license": "MIT",
     "dependencies": {
-        "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/trial/2021.2.5000.tar.gz"
+        "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/trial/2021.2.5000.tar.gz",
+        "run": "^1.4.0",
+        "socket.io": "^4.3.1"
     }
 }

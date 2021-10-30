@@ -25,7 +25,7 @@
     "accentColor": "#FFFFFF",
     "configurableTabs": [{
         "configurationUrl": "https://bauzeitplan-fe0ce.web.app/#/config",
-        "canUpdateConfiguration": false,
+        "canUpdateConfiguration": true,
         "scopes": [
             "team"
         ]
