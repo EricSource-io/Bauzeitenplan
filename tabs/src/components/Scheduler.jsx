@@ -18,7 +18,6 @@ import {
 } from "@fluentui/react-northstar";
 
 
-
 export class ResourceList {
     constructor(list) {
         this.list = React.useState(list);
@@ -50,7 +49,6 @@ export class ResourceList {
         const [state, setState] = this.list;
         let list = state;
         list.push(item);
-      console.log("EY", item)
         setState(list);
     }
     deleteItem(item) {
@@ -124,7 +122,7 @@ const uid = function(){
 
 
 export class Scheduler {
-    
+    //###
     config = {
         date: {
             start: new Date(),
@@ -142,6 +140,7 @@ export class Scheduler {
         resources: new ResourceList(),
         events: new EventList(),
     };
+
     ref = {
         scheduler_default_timeheader_scroll: React.createRef(),
     };

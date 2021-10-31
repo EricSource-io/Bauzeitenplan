@@ -16,12 +16,16 @@ import {
 import "./Scheduler.css";
 import { Scheduler, ResourceList, EventList } from "./Scheduler.jsx";
 import { Firemain } from "../Firemain";
+var firemain = new Firemain("test");
+export var scheduler;
 export default function Tab() {
   var dialogEvent = {
     inputEvent: document.getElementById("inputEvent"),
     resourceEvent: document.getElementById("resourceEvent"),
   };
-  var scheduler = new Scheduler();
+  
+  scheduler = new Scheduler();
+
   scheduler.config.date = {
     start: new Date(2021, 0, 1),
     end: new Date(2021, 1, 14),
@@ -42,7 +46,6 @@ export default function Tab() {
      new EventList.Item(2, 4, "2021-01-16", "2021-01-19", "Bodenfliesen"),
      new EventList.Item(3, 8, "2021-01-03", "2021-01-09", "Elektrik"),
     ]);
-    var firemain = new Firemain("test", scheduler.config);
   const [state, setState] = scheduler.state;
   return (
     <>
