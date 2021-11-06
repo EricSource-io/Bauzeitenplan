@@ -90,6 +90,7 @@ export class EventList {
         let index = list.indexOf(oldItem);
         list[index] = item;
         setState(list);
+        firemain.updateDoc({ resourceId: item.resourceId, text: item.text, start: item.start, end: item.end }, doc(firemain.refEvents, item.id));
     }
     addItem(item) {
         const [state, setState] = this.list;
@@ -102,6 +103,7 @@ export class EventList {
         const [state, setState] = this.list;
         const filterd = state.filter((e) => e.id !== eventId);
         setState(filterd);
+        firemain.deleteDoc(doc(firemain.refEvents, eventId));
     }
     deleteItemRow(resourceId) {
         const [state, setState] = this.list;
@@ -143,7 +145,9 @@ export class Scheduler {
         ],
         size: {
             cell: 40, //TODO: Ability to change cell sizes to 25/30/35/40
+            minHeight: 6 * 40, //6 => cells
         },
+
         resources: new ResourceList(),
         events: new EventList(),
     };
@@ -841,6 +845,7 @@ export class Scheduler {
         },
         Cells: () => {
             const [state, setState] = this.config.resources.list;
+
             let currentDate = new Date(this.config.date.start);
             let itemList = [];
             for (
@@ -849,8 +854,7 @@ export class Scheduler {
                 this.getDaysBetween(this.config.date.start, this.config.date.end);
                 row++
             ) {
-                const isWeekend =
-                    currentDate.getDay() === 0 || currentDate.getDay() === 6;
+                const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
                 currentDate.setDate(currentDate.getDate() + 1);
                 for (let column = 0; column < state.length; column++) {
                     let getClassNames = () => {
@@ -923,7 +927,7 @@ export class Scheduler {
                         }}
                     >
                         <MenuButton
-                            className="scheduler_event_settings"
+
                             trigger={
                                 <div
                                     className="scheduler_default_event"
@@ -1163,7 +1167,7 @@ export class Scheduler {
                         <div
                             id="scheduler_divider_vertical"
                             style={{
-                                height: state.length * this.config.size.cell + 105,
+                                height: (state.length * this.config.size.cell < this.config.size.minHeight ? this.config.size.minHeight : state.length * this.config.size.cell) + 105,
                             }}
                         />
                         <div id="scheduler_divider_horizontal" />
@@ -1179,7 +1183,7 @@ export class Scheduler {
                                 <div
                                     id="scheduler_default_rowEnd"
                                     style={{
-                                        top: state.length * this.config.size.cell,
+                                        top: state.length * this.config.size.cell < this.config.size.minHeight ? this.config.size.minHeight : state.length * this.config.size.cell,
                                     }}
                                 />
                             </div>
@@ -1198,6 +1202,7 @@ export class Scheduler {
                         onScroll={this.syncScroll}
                         style={{
                             height: state.length * this.config.size.cell + 15,
+                            minHeight: (state.length * this.config.size.cell < this.config.size.minHeight ? this.config.size.minHeight : state.length * this.config.size.cell) + 15
                         }}
                     >
                         <this.HTML.Cells />
