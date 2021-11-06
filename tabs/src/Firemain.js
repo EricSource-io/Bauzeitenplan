@@ -5,9 +5,12 @@ import {
     doc,
     collection,
     onSnapshot,
-    QuerySnapshot
+    QuerySnapshot,
+    addDoc,
+    updateDoc,
+    deleteDoc
 } from 'firebase/firestore';
-import { ResourceList, EventList } from "./components/Scheduler";
+import {ResourceList, EventList} from "./components/Scheduler";
 import {scheduler} from "./components/Tab";
 
 
@@ -32,16 +35,48 @@ export class Firemain {
         this.refEvents = collection(this.refScheduler, 'event');
         this.listenToDataChanges();
     }
-    listenToDataChanges() {
+    listenToDataChanges() { // Scheduler
         onSnapshot(this.refScheduler, docSnapshot => {
-          
             if (docSnapshot.exists()) {
                 const docData = docSnapshot.data();
-                scheduler?.config?.resources.update([new ResourceList.Item(docData.a, docData.b, "#ff9800"),])
-                console.log("SCHEDULER", JSON.stringify(docData))
             }
         });
-       
+        // Resources
+        onSnapshot(this.refResources, querySnapshot => {
+            const queryData = querySnapshot.docs.map((docSnapshot, index) => {
+               const uid = docSnapshot._key.path.segments[docSnapshot._key.path.segments.length-1];
+                const docData = docSnapshot.data();
+                // Should the position of the resources become important, switch from index to docData.id!
+                return new ResourceList.Item(uid, docData.name, docData.color)
+            });
+            console.log(queryData)
+            scheduler?.config?.resources.update(queryData);
+        })
+        // Events
+        onSnapshot(this.refEvents, querySnapshot => {
+            const queryData = querySnapshot.docs.map((docSnapshot, index) => {
+                const uid = docSnapshot._key.path.segments[docSnapshot._key.path.segments.length-1];
+                const docData = docSnapshot.data();
+                // Date format => "YYYY-MM-DD"
+                return new EventList.Item(uid, docData.resourceId, docData.start, docData.end, docData.text);
+            });
+            console.log(queryData)
+            scheduler?.config?.events.update(queryData);
+
+        })
+    }
+    async addANewDoc(doc, ref) {
+         await addDoc(ref, doc);
+
+         
+    }
+    async updateDoc(doc, ref) {
+        await updateDoc(ref,doc)
+    }
+
+    async deleteDoc(ref){
+        console.log(ref)
+        await deleteDoc(ref)
     }
 }
 

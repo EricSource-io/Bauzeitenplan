@@ -16,13 +16,16 @@ import {
     AddIcon,
     TrashCanIcon,
 } from "@fluentui/react-northstar";
-
+import { firemain, scheduler } from "./Tab";
+import {
+    doc
+} from 'firebase/firestore';
 
 export class ResourceList {
     constructor(list) {
         this.list = React.useState(list);
     }
-    update(newList){
+    update(newList) {
         const [state, setState] = this.list;
         setState(newList);
     }
@@ -50,14 +53,15 @@ export class ResourceList {
         let list = state;
         list.push(item);
         setState(list);
+        firemain.addANewDoc({ name: item.name, color: item.color }, firemain.refResources);
     }
     deleteItem(item) {
         const [state, setState] = this.list;
         let list = state;
         let index = list.indexOf(list.find((e) => e.id === item.id));
         list.splice(index, 1);
-       
         setState(list);
+        firemain.deleteDoc(doc(firemain.refResources, item.id));
     }
 }
 
@@ -74,7 +78,7 @@ export class EventList {
     constructor(list) {
         this.list = React.useState(list);
     }
-    update(newList){
+    update(newList) {
         const [state, setState] = this.list;
         setState(newList);
     }
@@ -85,7 +89,6 @@ export class EventList {
         let oldItem = list.find((e) => e.id === item.id);
         let index = list.indexOf(oldItem);
         list[index] = item;
-        console.log(oldItem.text, item.text);
         setState(list);
     }
     addItem(item) {
@@ -93,6 +96,7 @@ export class EventList {
         let list = state;
         list.push(item);
         setState(list);
+        firemain.addANewDoc({ resourceId: item.resourceId, text: item.text, start: item.start, end: item.end }, firemain.refEvents);
     }
     deleteItem(eventId) {
         const [state, setState] = this.list;
@@ -103,6 +107,9 @@ export class EventList {
         const [state, setState] = this.list;
         const filtered = state.filter((e) => e.resourceId !== resourceId);
         setState(filtered);
+        state.filter((e) => e.resourceId === resourceId).forEach(async (e) => {
+            await firemain.deleteDoc(doc(firemain.refEvents, e.id));
+        });
     }
 }
 
@@ -115,11 +122,11 @@ EventList.Item = class {
         this.text = text;
     }
 };
+
 /*TODO implement this function
 const uid = function(){
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }*/
-
 
 export class Scheduler {
     //###
