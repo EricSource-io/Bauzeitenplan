@@ -47,6 +47,7 @@ export class ResourceList {
         let index = list.indexOf(oldItem);
         list[index] = item;
         setState(list);
+        firemain.updateDoc({ name: item.name, color: item.color }, doc(firemain.refResources, item.id));
     }
     addItem(item) {
         const [state, setState] = this.list;
@@ -253,7 +254,7 @@ export class Scheduler {
                 let ResourceItems = () => {
                     const [stateResourceList, setStateResourceList] =
                         this.config.resources.list;
-                    let itemList = stateResourceList.map((item) => {
+                    let itemList = stateResourceList.map((item, index) => {
                         const [colorState, setColorState] = React.useState(
                             this.config.colors.find((e) => e.hex === item.color)
                         );
@@ -288,12 +289,12 @@ export class Scheduler {
                                             onChange={(e) => {
                                                 let value = e.target.value;
                                                 if (value !== undefined) {
-                                                    changedNames[item.id] = {
+                                                    changedNames[index] = {
                                                         id: item.id,
                                                         value: value,
                                                     };
                                                 } else {
-                                                    changedNames.splice(item.id, 1);
+                                                    changedNames.splice(index, 1);
                                                 }
                                             }}
                                         />
@@ -315,7 +316,7 @@ export class Scheduler {
                                                 let color = colorChange(
                                                     this.config.colors.indexOf(colorState)
                                                 );
-                                                changedColors[item.id] = { id: item.id, color: color };
+                                                changedColors[index] = { id: item.id, color: color };
                                                 setColorState(color);
                                             }}
                                             content={colorState.name}
@@ -1183,7 +1184,7 @@ export class Scheduler {
                                 <div
                                     id="scheduler_default_rowEnd"
                                     style={{
-                                        top: state.length * this.config.size.cell < this.config.size.minHeight ? this.config.size.minHeight : state.length * this.config.size.cell,
+                                        height: (state.length * this.config.size.cell < this.config.size.minHeight ? this.config.size.minHeight : state.length * this.config.size.cell) + 15
                                     }}
                                 />
                             </div>

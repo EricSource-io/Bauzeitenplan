@@ -27,7 +27,6 @@ export class Firemain {
     };
 
     constructor(ref) {
-        console.log("Init Database")
         this.app = initializeApp(this.firebaseConfig);
         this.firestore = getFirestore();
         this.refScheduler = doc(this.firestore, `scheduler/${ref}`);
