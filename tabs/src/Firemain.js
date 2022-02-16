@@ -17,13 +17,7 @@ import {scheduler} from "./components/Tab";
 export class Firemain {
 
     firebaseConfig = {
-        apiKey: "AIzaSyAd1G7g5RlZTuPjOZxN9FqX4d2p867DywA",
-        authDomain: "bauzeitplan-fe0ce.firebaseapp.com",
-        databaseURL: "https://bauzeitplan-fe0ce-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "bauzeitplan-fe0ce",
-        storageBucket: "bauzeitplan-fe0ce.appspot.com",
-        messagingSenderId: "145900452613",
-        appId: "1:145900452613:web:033e45042eaafd8d3dd56c"
+       //firebase
     };
 
     constructor(ref) {
